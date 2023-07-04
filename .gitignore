@@ -118,3 +118,5 @@ dmypy.json
 
 #config file
 .cnf
+
+.vscode
