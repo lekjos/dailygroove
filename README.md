@@ -13,6 +13,7 @@ A guessing game where players guess who submitted the randomly selected content.
 - run local server: `python manage.py runserver`
 
 ## Outstanding ToDos
+- [ ] Finish setting up GH Actions
 - [ ] Create view to add games and link from dashboard view
 - [ ] Write guessing game for in-person guessing (legacy)
    - [ ] `Submission` model
