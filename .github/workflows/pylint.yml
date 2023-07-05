@@ -21,7 +21,7 @@ jobs:
         poetry install --with dev
     - name: Analyzing the code with pylint
       run: |
-        poetry run pylint --load-plugins=pylint-django $(git ls-files '*.py')
+        poetry run pylint --load-plugins=pylint_django --django-settings-module=daily_groove.settings $(git ls-files '*.py')
     - name: Analyzing code with black
       run: |
         poetry run black . --check
