@@ -13,4 +13,4 @@ class Player(models.Model):
         return bool(self.user)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
