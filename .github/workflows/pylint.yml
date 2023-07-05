@@ -1,4 +1,4 @@
-name: Pylint
+name: Build & Test
 
 on: [push]
 
@@ -33,4 +33,6 @@ jobs:
     - name: Analyzing code with black
       run: |
         poetry run black . --check
-  
+    - name: Run Unit Tests
+      run: |
+        poetry run src/manage.py test
