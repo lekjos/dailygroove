@@ -19,6 +19,8 @@ django-debug-toolbar = "*"
 mixer = "*"
 isort = "^5.12.0"
 pre-commit = "^3.3.3"
+pylint = "^2.17.4"
+pylint-django = "^2.5.3"
 
 
 [build-system]

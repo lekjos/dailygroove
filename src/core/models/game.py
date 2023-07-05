@@ -15,4 +15,4 @@ class Game(models.Model):
         return reverse("game-view", kwargs={"slug": self.slug})
 
     def __str__(self):
-        return self.name
+        return str(self.name)
