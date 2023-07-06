@@ -33,11 +33,10 @@ class Round(models.Model):
             .order_by("-round_number")
             .values_list("round_number", flat=True)
             .first()
-        )
-        if top_round_number:
-            self.round_number = top_round_number + 1
-        else:
-            self.round_number = 1
+        ) or 1
+
+        self.round_number = top_round_number + 1
+
         super().save(*args, *kwargs)
 
     def __str__(self):
