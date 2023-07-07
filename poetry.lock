@@ -185,6 +185,21 @@ files = [
 toml = ["tomli"]
 
 [[package]]
+name = "crispy-bootstrap4"
+version = "2022.1"
+description = "Bootstrap4 template pack for django-crispy-forms"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "crispy-bootstrap4-2022.1.tar.gz", hash = "sha256:f18386c4d96180c1bb1212487d6e8f5a3dd1a9bb58d3032183973d4d130b55f9"},
+    {file = "crispy_bootstrap4-2022.1-py3-none-any.whl", hash = "sha256:5241ab1dc2188c95560aa786439bcbedec7416e6b0f5a52dded82380810367ec"},
+]
+
+[package.dependencies]
+django = ">=3.2"
+django-crispy-forms = ">=1.14.0"
+
+[[package]]
 name = "debugpy"
 version = "1.6.7"
 description = "An implementation of the Debug Adapter Protocol for Python"
@@ -255,6 +270,20 @@ tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 [package.extras]
 argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
+
+[[package]]
+name = "django-crispy-forms"
+version = "2.0"
+description = "Best way to have Django DRY forms"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-crispy-forms-2.0.tar.gz", hash = "sha256:90193b068bf948d9c68449bc8260afed1a8e2afe11ee0bac8c4ebfaeb175b322"},
+    {file = "django_crispy_forms-2.0-py3-none-any.whl", hash = "sha256:d1d4e585929058a9ab3b797666ea5b69320b9ba7937f9d146d32173246a6fd13"},
+]
+
+[package.dependencies]
+django = ">=3.2"
 
 [[package]]
 name = "django-debug-toolbar"
@@ -806,4 +835,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "136a9cdc44865d6b134a84ad4ba37374405f4647b54f2530b2d56f09ac5b6f05"
+content-hash = "550a9d8c9113c5c4e4707e809529dcdfa52875bc82842de1a7ff77924716b5c9"

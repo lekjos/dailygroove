@@ -11,6 +11,8 @@ python = "^3.11"
 django = "^4.2.3"
 mysqlclient = "*"
 python-dotenv = "^1.0.0"
+django-crispy-forms = "*"
+crispy-bootstrap4 = "*"
 
 [tool.poetry.group.dev.dependencies]
 black= "^23.3.0"
