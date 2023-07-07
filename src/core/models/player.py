@@ -13,9 +13,9 @@ class Player(models.Model):
     )
     role = models.PositiveSmallIntegerField(default=Roles.PLAYER)
 
-    @property
-    def anonymous(self):
-        return bool(self.user)
+    # @property
+    # def anonymous(self):
+    #     return bool(self.user)
 
     def __str__(self):
         return str(self.name)
