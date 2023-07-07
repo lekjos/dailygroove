@@ -33,7 +33,7 @@ class Round(models.Model):
             .order_by("-round_number")
             .values_list("round_number", flat=True)
             .first()
-        ) or 1
+        ) or 0
 
         self.round_number = top_round_number + 1
 
