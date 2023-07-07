@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from django.db.models import Count, F, Max, OuterRef, Q, Subquery
+from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
