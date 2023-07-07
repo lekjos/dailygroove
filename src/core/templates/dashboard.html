@@ -1,11 +1,17 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
+
+{% block bodyattrs %}class="text-center"{% endblock %}
+
 {% block content %}
 <h1>Dashboard</h1>
 
 <h2>Active Games</h2>
 <ul>
-{% for game in active_games %}
-    <li><a href="{{game.get_absolute_url}}">{{game.name}}</a>
-{% endfor %}
+  {% for game in active_games %}
+  <li>
+    <a href="{{game.get_absolute_url}}">{{game.name}}</a>
+  </li>
+  {% endfor %}
 </ul>
+
 {% endblock %}

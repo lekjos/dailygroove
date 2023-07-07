@@ -1,14 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
-    {% load static %}
-    <head>
-        <title>{% if title %}{{title}}{% else %}Daily Groove{% endif %}</title>
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'fa/css/all.min.css' %}">
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    </head>
+<html lang="en">
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+  <meta name="description" content="A group guessing game" />
+  <meta name="author" content="Leif Kjos" />
+  <head>
+    <title>{% if title %}{{title}}{% else %}Daily Groove{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendors/fa/css/all.min.css' %}" />
+    <script src="{% static 'vendors/bootstrap/js/bootstrap.min.js' %}"></script>
+    {% block extra_style %}{% endblock %}
+  </head>
 
-    <body>
+  <body {% block bodyattrs %}{% endblock %}>
     {% block content %}{% endblock content %}
-    </body>
+  </body>
 </html>
