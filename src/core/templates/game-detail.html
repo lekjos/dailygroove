@@ -1,4 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Game {{object.name}}</h1>
+
+<h2>Leaderboard</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Most Recent</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in leader_board %}
+        <tr>
+            <th scope="row">{{player.name}}</th>
+            <td>{{player.win_count}}</td>
+            <td>{{player.most_recent_win}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

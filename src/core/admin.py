@@ -9,7 +9,7 @@ from core.models import Game, Player, Round
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ("name", "anonymous")
+    list_display = ("name",)
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
         qs = super().get_queryset(request)
