@@ -137,3 +137,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+ENABLE_DEBUG_TOOLBAR = bool(os.getenv("ENABLE_DEBUG_TOOLBAR", False))
+
+if ENABLE_DEBUG_TOOLBAR:
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda _request: DEBUG,
+    }
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+    INSTALLED_APPS += ("debug_toolbar",)
