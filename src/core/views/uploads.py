@@ -1,13 +1,10 @@
 from functools import cached_property
-from typing import Any, Dict
 
-from django.db.models import Prefetch
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
 
 from core.forms.upload_form import UploadFormAllGames
-from core.models.game import Game
 from core.models.submission import Submission
 
 
@@ -57,17 +54,18 @@ class UploadsView(FormMixin, ListView):
         Handle POST requests: instantiate a form instance with the passed
         POST variables and then check if it's valid.
         """
+        form = self.get_form()
         print(request.POST)
         if "url" in request.POST:
-            form = self.get_form()
             if form.is_valid():
                 form.save()
                 return self.form_valid(form)
-            else:
-                return self.form_invalid(form)
+            return self.form_invalid(form)
         elif "delete-song" in request.POST:
             # TODO delete song
             pass
+
+        return self.form_invalid(form)
 
     # PUT is a valid HTTP verb for creating (with a known URL) or editing an
     # object, note that browsers only support POST for now.

@@ -22,11 +22,13 @@ class UploadFormAllGames(forms.ModelForm):
         self.user = user
         super().__init__(*args, **kwargs)
 
-    def save(self):
+    def save(self, commit=True):
         self.instance.user = self.user
-        self.instance.save()
-        self.instance.games.set(
-            Game.objects.filter(players__user=self.user).values_list("pk", flat=True)
-        )
-        print(self.instance.__dict__)
+        if commit:
+            self.instance.save()
+            self.instance.games.set(
+                Game.objects.filter(players__user=self.user).values_list(
+                    "pk", flat=True
+                )
+            )
         super().save(self)
