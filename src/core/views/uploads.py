@@ -56,16 +56,16 @@ class UploadsView(FormMixin, ListView):
         """
         form = self.get_form()
         print(request.POST)
-        if "url" in request.POST:
+        if "url" in request.POST:  # pylint: disable=no-else-return
             if form.is_valid():
                 form.save()
                 return self.form_valid(form)
             return self.form_invalid(form)
         elif "delete-song" in request.POST:
             # TODO delete song
-            pass
-
-        return self.form_invalid(form)
+            return self.form_invalid(form)
+        else:
+            return self.form_invalid(form)
 
     # PUT is a valid HTTP verb for creating (with a known URL) or editing an
     # object, note that browsers only support POST for now.
