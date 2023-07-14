@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid">
+  <div class="jumbotron">
+    <h1 class="display-4">My Uploads</h1>
+  </div>
+
+<div class="container md-6">
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Upload</h5>
+      <p class="card-text">Submit your groove</p>
+      <form class="form" method="post">
+        {% csrf_token %} {{form.as_p}}
+        <button class="btn btn-primary btn-block" type="submit">
+          Submit Groove
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+  <h2>Uploads</h2>
+  <form method="post">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Url</th>
+        <th>Fresh Games</th>
+        <th>Uploaded</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for object in object_list %}
+      <tr>
+        <th scope="row">{{object.title}}</th>
+        <td><a href="{{object.url}}">{{object.url}}</a></td>
+        <td>
+          {% for game in object.games.all %}
+            {{game.name}}{% if not forloop.last %}, {% endif %} 
+          {% endfor %}
+        </td>
+        <td>{{object.datetime}}</td>
+        <td><i class="fa-solid fa-trash"></i></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</form>
+</div>
+{% endblock %}
+

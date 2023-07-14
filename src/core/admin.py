@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db.models import BooleanField, Count, ExpressionWrapper, Q, QuerySet
 from django.http.request import HttpRequest
 
-from core.models import Game, Player, Round
+from core.models import Game, Player, Round, Submission
 
 
 @admin.register(Player)
@@ -47,3 +47,13 @@ class RoundAdmin(admin.ModelAdmin):
         "game__name",
         "player__name",
     )
+
+
+@admin.register(Submission)
+class SubmissionAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "title",
+        "url",
+    )
+    search_fields = ("url", "user", "games__name")
