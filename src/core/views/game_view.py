@@ -16,8 +16,23 @@ class GameView(DetailView):
 
     @cached_property
     def game(self):
-        game = get_object_or_404(Game, slug=self.kwargs["slug"])
-        return game
+        return get_object_or_404(Game, slug=self.kwargs["slug"])
+
+    @cached_property
+    def rounds(self):
+        return (
+            Round.objects.filter(game=self.game)
+            .annotate_game()
+            .order_by("-datetime")
+            .values(
+                "round_number",
+                "datetime",
+                "winner_name",
+                "submitted_by",
+                "title",
+                "url",
+            )
+        )
 
     def get_object(self, *args, **kwargs):
         return self.game
@@ -26,6 +41,7 @@ class GameView(DetailView):
         context = super().get_context_data(**kwargs)
         context["page_title"] = self.game.name
         context["leader_board"] = self.leader_board
+        context["rounds"] = self.rounds
         return context
 
     @property
