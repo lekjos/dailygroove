@@ -9,7 +9,6 @@ class Game(models.Model):
     owner = models.ForeignKey(
         "core.player", related_name="owned_games", on_delete=models.CASCADE
     )
-    allow_anonymous = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("game-view", kwargs={"slug": self.slug})
