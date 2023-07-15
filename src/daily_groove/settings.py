@@ -138,9 +138,10 @@ LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-ENABLE_DEBUG_TOOLBAR = bool(os.getenv("ENABLE_DEBUG_TOOLBAR", False))
+ENABLE_DEBUG_TOOLBAR = bool(os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true")
 
 if ENABLE_DEBUG_TOOLBAR:
+    print("DEBUG TOOLBAR ENABLED")
     DEBUG_TOOLBAR_CONFIG = {
         "SHOW_TOOLBAR_CALLBACK": lambda _request: DEBUG,
     }
