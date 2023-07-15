@@ -9,23 +9,24 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "^4.2.3"
+django-crispy-forms = "*"
+django-extensions = "^3.2.3"
 mysqlclient = "*"
 python-dotenv = "^1.0.0"
-django-crispy-forms = "*"
 crispy-bootstrap4 = "*"
-factory-boy = "^3.2.1"
 
 [tool.poetry.group.dev.dependencies]
 black= "^23.3.0"
 coverage = "*"
+debugpy = "*"
 django-debug-toolbar = "*"
-mixer = "*"
+factory-boy = "^3.2.1"
+faker = "^19.1.0"
 isort = "^5.12.0"
+mixer = "*"
 pre-commit = "^3.3.3"
 pylint = "^2.17.4"
 pylint-django = "^2.5.3"
-debugpy = "*"
-faker = "^19.1.0"
 
 
 [build-system]

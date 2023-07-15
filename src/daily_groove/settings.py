@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "core",
     "crispy_forms",
     "crispy_bootstrap4",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,7 @@ if ENABLE_DEBUG_TOOLBAR:
     }
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     INSTALLED_APPS += ("debug_toolbar",)
+
+SHELL_PLUS_IMPORTS = [
+    "from datetime import datetime",
+]
