@@ -1,4 +1,23 @@
 from django.db import models
+from django.db.models import F
+
+
+class RoundQuerySet(models.QuerySet):
+    def annotate_winner_name(self):
+        return self.annotate(winner_name=F("winner__name"))
+
+    def annotate_game(self):
+        """
+        - winner_name
+        - submitted_by (user_name)
+        - title
+        - url
+        """
+        return self.annotate_winner_name().annotate(
+            submitted_by=F("submission__user__username"),
+            title=F("submission__title"),
+            url=F("submission__url"),
+        )
 
 
 class Round(models.Model):
@@ -7,9 +26,9 @@ class Round(models.Model):
         related_name="wins",
         on_delete=models.CASCADE,
     )
-    submitter = models.ForeignKey(
-        "core.player",
-        related_name="submissions",
+    submission = models.ForeignKey(
+        "core.submission",
+        related_name="rounds",
         on_delete=models.CASCADE,
     )
     moderator = models.ForeignKey(
@@ -23,6 +42,8 @@ class Round(models.Model):
     game = models.ForeignKey("core.game", on_delete=models.CASCADE)
     round_number = models.PositiveIntegerField(editable=False, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
+
+    objects: RoundQuerySet = RoundQuerySet.as_manager()
 
     class Meta:
         unique_together = ("round_number", "game")

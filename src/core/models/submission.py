@@ -10,8 +10,8 @@ class Submission(models.Model):
         SPOTIFY = 3
 
     url = models.URLField(max_length=1024, null=True, blank=True)
-    type = models.PositiveSmallIntegerField(editable=False, null=True, blank=True)
-    title = models.CharField(max_length=512, default=Type.NOT_SPECIFIED)
+    type = models.PositiveSmallIntegerField(editable=False, default=Type.NOT_SPECIFIED)
+    title = models.CharField(max_length=512, null=True, blank=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="submissions", on_delete=models.CASCADE
     )

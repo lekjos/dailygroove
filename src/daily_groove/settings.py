@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "core",
     "crispy_forms",
     "crispy_bootstrap4",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "core.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -147,3 +149,7 @@ if ENABLE_DEBUG_TOOLBAR:
     }
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
     INSTALLED_APPS += ("debug_toolbar",)
+
+SHELL_PLUS_IMPORTS = [
+    "from datetime import datetime",
+]
