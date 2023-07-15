@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F
 
 
 class Round(models.Model):
@@ -7,9 +8,9 @@ class Round(models.Model):
         related_name="wins",
         on_delete=models.CASCADE,
     )
-    submitter = models.ForeignKey(
-        "core.player",
-        related_name="submissions",
+    submission = models.ForeignKey(
+        "core.submission",
+        related_name="rounds",
         on_delete=models.CASCADE,
     )
     moderator = models.ForeignKey(
