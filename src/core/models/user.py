@@ -56,3 +56,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def delete(self, *args, **kwargs):
+        from ..models.player import Player
+
+        Player.objects.filter(user=self).update(name=self.username)
+        super().delete(*args, **kwargs)
