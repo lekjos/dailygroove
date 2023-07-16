@@ -16,7 +16,9 @@ class Submission(models.Model):
         settings.AUTH_USER_MODEL, related_name="submissions", on_delete=models.CASCADE
     )
     datetime = models.DateTimeField(auto_now_add=True)
-    games = models.ManyToManyField("core.game", related_name="submissions")
+    games = models.ManyToManyField(
+        "core.game", related_name="submissions", through="core.GameSubmission"
+    )
 
     def __str__(self):
         return str(self.title)
