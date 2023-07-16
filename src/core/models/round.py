@@ -94,8 +94,6 @@ class RoundQuerySet(models.QuerySet):
 
         if not most_recent_round:
             return Round.objects.create(game_id=game)
-            # r.save()
-            # return r
         return Round.objects.first()
 
 
