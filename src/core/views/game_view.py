@@ -37,11 +37,17 @@ class GameView(DetailView):
     def get_object(self, *args, **kwargs):
         return self.game
 
+    @property
+    def next_round(self):
+        return Round.objects.next_round(game=self.game)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = self.game.name
         context["leader_board"] = self.leader_board
         context["rounds"] = self.rounds
+        next_round = self.next_round
+        context["next_round"] = next_round
         return context
 
     @property
