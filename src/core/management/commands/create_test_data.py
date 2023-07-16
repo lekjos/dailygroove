@@ -1,3 +1,5 @@
+import random
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
@@ -9,6 +11,7 @@ from core.models.factories import (
     UserFactory,
 )
 from core.models.game import Game
+from core.models.game_submission import GameSubmission
 from core.models.submission import Submission
 
 
@@ -37,24 +40,27 @@ class Command(BaseCommand):
             password="test",
             is_superuser=True,
         )
+        admin_player = PlayerFactory(user=user)
 
-        player = PlayerFactory(user=user)
+        players = PlayerFactory.create_batch(5)
 
         game = GameFactory(
-            name="Test Game", slug="test-game", owner=player, players=[player]
+            name="Test Game", slug="test-game", owner=admin_player, players=players
         )
 
         submissions = SubmissionFactory.create_batch(5, games=[game])
 
-        rounds = []
         for i, submission in enumerate(submissions):
-            rounds.append(
-                Round(
-                    game=game, submission=submission, winner=player, round_number=i + 1
-                )
+            r = Round(
+                game=game,
+                submission=submission,
+                winner=random.choice(players),
+                round_number=i + 1,
             )
-
-        Round.objects.bulk_create(rounds)
+            r.save()
+            GameSubmission.objects.filter(game=game, submission=submission).update(
+                round=r
+            )
 
         self.stdout.write(
             self.style.SUCCESS(f"Successfully created test game: {game.name}")
