@@ -1,5 +1,11 @@
+import zoneinfo
+
 from django.db import models
 from django.urls import reverse
+
+
+def get_timezone_choices():
+    return ((x, x) for x in zoneinfo.available_timezones())
 
 
 class Game(models.Model):
