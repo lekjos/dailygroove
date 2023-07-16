@@ -30,6 +30,7 @@ class PlayerFactory(DjangoModelFactory):
 class GameFactory(DjangoModelFactory):
     name = factory.Faker("word")
     owner = factory.SubFactory(PlayerFactory)
+    slug = factory.Faker("slug")
 
     class Meta:
         model = Game
@@ -77,6 +78,17 @@ class RoundFactory(DjangoModelFactory):
     # submission = factory.SubFactory(SubmissionFactory)
     # moderator = factory.SubFactory(PlayerFactory)
     game = factory.SubFactory(GameFactory)
+    winner = factory.SubFactory(PlayerFactory)
+    moderator = factory.SubFactory(PlayerFactory)
 
     class Meta:
         model = Round
+
+    @factory.post_generation
+    def submissions(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for submission in extracted:
+                self.submissions.add(submission)  # pylint: disable=no-member
