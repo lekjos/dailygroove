@@ -152,4 +152,5 @@ if ENABLE_DEBUG_TOOLBAR:
 
 SHELL_PLUS_IMPORTS = [
     "from datetime import datetime",
+    "from core.models.factories import *",
 ]
