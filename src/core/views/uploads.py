@@ -1,5 +1,6 @@
 from functools import cached_property
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.edit import FormMixin
@@ -8,7 +9,7 @@ from core.forms.upload_form import UploadFormAllGames
 from core.models.submission import Submission
 
 
-class UploadsView(FormMixin, ListView):
+class UploadsView(LoginRequiredMixin, FormMixin, ListView):
     model = Submission
     form_class = UploadFormAllGames
     template_name = "uploads.html"
@@ -20,6 +21,8 @@ class UploadsView(FormMixin, ListView):
 
     def setup(self, *args, **kwargs):
         super().setup(*args, **kwargs)
+        if not self.request.user.is_authenticated:
+            return self.handle_no_permission()
         self.object_list = self.uploads
 
     @cached_property
