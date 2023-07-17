@@ -15,7 +15,6 @@ django-crispy-forms = "*"
 django-extensions = "^3.2.3"
 mysqlclient = "*"
 pandas = "^2.0.3"
-pytest-django = "^4.5.2"
 python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -30,6 +29,7 @@ mixer = "*"
 pre-commit = "^3.3.3"
 pylint = "^2.17.4"
 pylint-django = "^2.5.3"
+pytest-django = "^4.5.2"
 
 
 [build-system]
