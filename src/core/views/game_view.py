@@ -4,6 +4,7 @@ from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
+from core.exceptions import NoEligibleSubmissionsError
 from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
@@ -38,16 +39,31 @@ class GameView(DetailView):
         return self.game
 
     @property
-    def next_round(self):
-        return Round.objects.next_round(game=self.game)
+    def current_round(self):
+        try:
+            return Round.objects.current_round(game=self.game)
+        except NoEligibleSubmissionsError:
+            return {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Out of Player Submissions!",
+            }
+
+    @property
+    def players(self):
+        return (
+            Player.objects.filter(game=self.game)
+            .annotate_name()
+            .annotate_most_recent_submission(self.game)
+            .annotate_submission_count(self.game)
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page_title"] = self.game.name
         context["leader_board"] = self.leader_board
         context["rounds"] = self.rounds
-        next_round = self.next_round
-        context["next_round"] = next_round
+        context["current_round"] = self.current_round
+        context["players"] = self.players
         return context
 
     @property
@@ -59,10 +75,11 @@ class GameView(DetailView):
         )
         return (
             Player.objects.filter(game=self.game)
+            .annotate_name()
             .annotate(
                 win_count=Count(F("wins"), filter=Q(game=self.game), distinct=True),
                 most_recent_win=recent_sqry,
             )
             .order_by("-win_count")
-            .values("name", "win_count", "most_recent_win")
+            .values("player_name", "win_count", "most_recent_win")
         )

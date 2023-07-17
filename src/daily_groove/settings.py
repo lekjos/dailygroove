@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+
 import os
 from pathlib import Path
 
@@ -29,11 +30,32 @@ ROOT_URL = os.getenv("ROOT_URL", "http://localhost:8000")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+env = os.getenv("DJANGO_ENV", "dev")
+
+if env == "dev":
+    DEBUG = True
+elif env == "prod":
+    DEBUG = False
+else:
+    raise ValueError("Invalid Django Environment")
 
 ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
+
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "60"))
+
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "False") == "True"
+
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "False") == "True"
+
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "False") == "True"
+
+SECURE_HSTS_PRELOAD = os.getenv("SECURE_HSTS_PRELOAD", "False") == "True"
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+    os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
+)
 
 # Application definition
 
@@ -44,6 +66,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "anymail",
     "core",
     "crispy_forms",
     "crispy_bootstrap4",
@@ -78,18 +101,35 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "daily_groove.wsgi.application"
+WSGI_APPLICATION = os.getenv("WSGI_APPLICATION", "daily_groove.wsgi.application")
 
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if env == "dev":
+    print("USING LOCAL SQLITE TEST DB")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    print(f'USING DB: {os.getenv("DB_SERVICE")}')
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("DB_ENGINE"),
+            "NAME": os.getenv("DB_NAME"),
+            "USER": os.getenv("DB_USER"),
+            "PASSWORD": os.getenv("DB_PASS"),
+            "HOST": os.getenv("DB_SERVICE"),
+            "PORT": int(os.getenv("DB_PORT", "3306")),
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO';",
+            "default-character-set": "utf8",
+        }
+    }
+
 
 AUTH_USER_MODEL = "core.User"
 
@@ -140,7 +180,7 @@ LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-ENABLE_DEBUG_TOOLBAR = bool(os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true")
+ENABLE_DEBUG_TOOLBAR = os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true"
 
 if ENABLE_DEBUG_TOOLBAR:
     print("DEBUG TOOLBAR ENABLED")
@@ -154,3 +194,16 @@ SHELL_PLUS_IMPORTS = [
     "from datetime import datetime",
     "from core.models.factories import *",
 ]
+
+
+## Email Backend
+
+EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+DEFAULT_FROM_EMAIL = (
+    os.getenv("DEFAULT_FROM_EMAIL", "Daily Groove <noreply@dailygroove.us>"),
+)
+
+ANYMAIL = {
+    "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY", None),
+    "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY", None),
+}

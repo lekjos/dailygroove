@@ -1,54 +1,106 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page_content %}
   <h1>Game {{ object.name }}</h1>
 
-  <div class="card">
-    <div class="card-header">Leaderboard</div>
-    <div class="card-body">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Player</th>
-            <th>Wins</th>
-            <th>Most Recent</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for player in leader_board %}
-            <tr>
-              <th scope="row">{{ player.name }}</th>
-              <td>{{ player.win_count }}</td>
-              <td>{{ player.most_recent_win }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header">Round History</div>
-    <div class="card-body">
-        <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Url</th>
-                <th>Winner</th>
-                <th>Submitted by</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for round in rounds %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        <div class="card">
+          <div class="card-header">Current Round</div>
+          <a href="{{current_round.url}}">{{current_round.title}}</a>
+          <p>{% if not round.winner %}Round Ends at: {% else %}Next Round Begins at: {% endif %}{{current_round.next_round}}</p>
+          <div class="card-body">
+          </div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="card">
+          <div class="card-header">Current Players</div>
+            <table class="table">
+              <thead>
                 <tr>
-                  <th scope="row">{{ round.round_number }} - {{round.datetime|date:"N j, y"}}</th>
-                  <td><a href="{{round.url}}">{% if round.title %}{{ round.title }}{% else %}{{round.url}}{% endif %}</a></td>
-                  <td>{{ round.winner_name }}</td>
-                  <td>{{ round.submitted_by }}</td>
+                  <th>Player</th>
+                  <th>Submissions</th>
+                  <th>Most Recent</th>
                 </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {% for player in players %}
+                  <tr>
+                    <th scope="row">{{ player.player_name }}</th>
+                    <td>{{ player.submission_count }}</td>
+                    <td>{{ player.most_recent_submission }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          <div class="card-body">
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md">
+        <div class="card">
+          <div class="card-header">Leaderboard</div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Wins</th>
+                  <th>Most Recent</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for player in leader_board %}
+                  <tr>
+                    <th scope="row">{{ player.player_name }}</th>
+                    <td>{{ player.win_count }}</td>
+                    <td>{{ player.most_recent_win }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Round History</div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Url</th>
+                  <th>Winner</th>
+                  <th>Submitted by</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for round in rounds %}
+                  <tr>
+                    <th scope="row">{{ round.round_number }} - {{ round.datetime|date:'N j, y' }}</th>
+                    <td>
+                      <a href="{{ round.url }}">
+                        {% if round.title %}
+                          {{ round.title }}
+                        {% else %}
+                          {{ round.url }}
+                        {% endif %}
+                      </a>
+                    </td>
+                    <td>{{ round.winner_name }}</td>
+                    <td>{{ round.submitted_by }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

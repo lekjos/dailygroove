@@ -8,5 +8,8 @@ class GameSubmission(models.Model):
         "core.Round", null=True, blank=True, on_delete=models.CASCADE
     )
 
+    class Meta:
+        unique_together = (("game", "submission"),)
+
     def __str__(self):
         return f"{self.game.name} - {self.submission.title}"

@@ -8,6 +8,8 @@ from django.db.models.functions import Coalesce
 
 import pandas as pd
 
+from core.exceptions import NoEligibleSubmissionsError
+
 if TYPE_CHECKING:
     from core.models.game import Game
 
@@ -31,7 +33,7 @@ class RoundQuerySet(models.QuerySet):
             url=F("submission__url"),
         )
 
-    def next_round(self, game: Union["Game", int]):
+    def current_round(self, game: Union["Game", int]):
         from core.models.game import Game
 
         game_tz = zoneinfo.ZoneInfo(game.timezone)
@@ -78,10 +80,20 @@ class RoundQuerySet(models.QuerySet):
         ).order_by("-round_number")
 
         if now < end_date:
-            return Round.objects.none()
+            most_recent_round = most_recent_round.annotate(
+                next_round_at=models.Value(
+                    end_date, output_field=models.DateTimeField()
+                )
+            )
+        else:
+            most_recent_round = most_recent_round.annotate(
+                round_ends_at=models.Value(
+                    end_date, output_field=models.DateTimeField()
+                )
+            )
 
         if not most_recent_round:
-            return Round.objects.create(game=game)
+            return Round.objects.create(game_id=game)
         return Round.objects.first()
 
 
@@ -138,21 +150,26 @@ class Round(models.Model):
     def _set_default_submission(self):
         from ..models.submission import Submission
 
-        if not self.submission:
+        try:
+            self.submission
+        except Submission.DoesNotExist as e:
             cols = ("pk", "user_id")
             all_eligible = Submission.objects.filter(
-                games=self, gamesubmission__round__isnull=True
+                games=self.game, gamesubmission__round__isnull=True
             ).values_list(*cols)
 
-            df = pd.DataFrame(all_eligible)
-            df = df.rename(columns=dict(enumerate(cols)))
+            if all_eligible:
+                df = pd.DataFrame(all_eligible)
+                df = df.rename(columns=dict(enumerate(cols)))
 
-            random_submissions = (
-                df.groupby("user_id")["pk"]
-                .apply(lambda x: x.sample(n=1))
-                .reset_index(drop=True)
-            )
-            self.submission = random_submissions.sample(n=1)["pk"].values[0]
+                random_submissions = (
+                    df.groupby("user_id")["pk"]
+                    .apply(lambda x: x.sample(n=1))
+                    .reset_index(drop=True)
+                )
+                self.submission = random_submissions.sample(n=1)["pk"].values[0]
+            else:
+                raise NoEligibleSubmissionsError() from e
 
     def __str__(self):
         return f"{self.game} - round {self.round_number}"

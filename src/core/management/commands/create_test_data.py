@@ -3,13 +3,8 @@ import random
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from core.models import Round
-from core.models.factories import (
-    GameFactory,
-    PlayerFactory,
-    SubmissionFactory,
-    UserFactory,
-)
+from core.models import Round, User
+from core.models.factories import GameFactory, PlayerFactory, SubmissionFactory
 from core.models.game import Game
 from core.models.game_submission import GameSubmission
 from core.models.submission import Submission
@@ -28,17 +23,16 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["delete"]:
-            for model in [Game, Submission, Round]:
+            for model in [Game, Submission, Round, User]:
                 model.objects.all().delete()
 
         if not settings.DEBUG:
             raise CommandError("This command may only be run in debug mode")
 
-        user = UserFactory(
+        user = User.objects.create_superuser(
             username="admin",
             email="admin@admin.admin",
             password="test",
-            is_superuser=True,
         )
         admin_player = PlayerFactory(user=user)
 
