@@ -7,9 +7,10 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 crispy-bootstrap4 = "*"
 django = "^4.2.3"
+django-anymail = "^10.0"
 django-crispy-forms = "*"
 django-extensions = "^3.2.3"
 mysqlclient = "*"

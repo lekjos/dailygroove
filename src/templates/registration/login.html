@@ -1,34 +1,35 @@
-{% extends "base.html" %} {% block extra_style %}
+{% extends 'base.html' %}
+{% load i18n %}
 {% load static %}
-{% load crispy_forms_tags %}
-
-<style>
-  .bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-
-  @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
-  }
-</style>
-<link href="{% static 'css/signin.css' %}" rel="stylesheet">
-{% endblock %} 
-{% block content %}
-<div class="container-fluid">
-    <i class="fa-solid fa-music"></i>
-    <form class="form-signin" method="post">
-    {% csrf_token %%}
-    {{ form|crispy }}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">
-      Sign in
-    </button>
-  </form>
-</div>
+{% block title %}Login{% endblock %}
+{% block extra_style %}<link href="{% static 'css/login.css' %}" rel="stylesheet">{% endblock %}
+{% block page_content %}
+    <div class="wrapper fadeInDown">
+        <div id="formContent"></div>
+            <!-- Icon -->
+            <div class="fadeIn first">
+                <img src="{% static 'img/logo.jpg' %}" id="icon" alt="User Icon" />
+            </div>
+            {% if form.errors %}
+                <div class="alert alert-formContent">
+                    <p><strong>{% trans "Oh snap!" %}</strong> {% trans "Please enter a correct username and password. Note that both fields are case-sensitive." %}</p>
+                </div>
+            {% endif %}
+            <!-- Login Form -->
+            <form action="{% url 'login' %}" method="post" class="form-horizontal" role="form">{% csrf_token %}
+                <div class = "fadeIn second">{{ form.username.errors }}
+                    {{ form.username }}
+                </div>
+                <div class = "fadeIn third">{{ form.password.errors }}
+                    {{ form.password }}
+                </div>
+                <input type="submit" class="fadeIn fourth" value="Log In">
+            </form>
+            
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="{% url 'password_reset' %}">Forgot Password?</a>
+        </div>
+    </div>
+        
 {% endblock %}
