@@ -210,12 +210,6 @@ DEFAULT_FROM_EMAIL = (
     os.getenv("DEFAULT_FROM_EMAIL", "Daily Groove <noreply@dailygroove.us>"),
 )
 
-# Forwarding address for contact form
-EMAIL_CONTACT_FROM_ADDRESS = os.getenv("EMAIL_CONTACT_FROM_ADDRESS", None)
-EMAIL_CONTACT_TO_ADDRESS = os.getenv("EMAIL_CONTACT_TO_ADDRESS", None)
-if any([EMAIL_CONTACT_FROM_ADDRESS is None, EMAIL_CONTACT_TO_ADDRESS is None]):
-    raise ValueError("email contact form address required")
-
 ANYMAIL = {
     "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY", None),
     "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY", None),
