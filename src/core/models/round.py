@@ -152,7 +152,7 @@ class Round(models.Model):
 
         try:
             self.submission
-        except Submission.DoesNotExist:
+        except Submission.DoesNotExist as e:
             cols = ("pk", "user_id")
             all_eligible = Submission.objects.filter(
                 games=self.game, gamesubmission__round__isnull=True
@@ -169,7 +169,7 @@ class Round(models.Model):
                 )
                 self.submission = random_submissions.sample(n=1)["pk"].values[0]
             else:
-                raise NoEligibleSubmissionsError()
+                raise NoEligibleSubmissionsError() from e
 
     def __str__(self):
         return f"{self.game} - round {self.round_number}"

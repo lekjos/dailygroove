@@ -19,7 +19,7 @@ class UploadsView(LoginRequiredMixin, FormMixin, ListView):
     def get_success_url(self) -> str:
         return reverse("uploads")
 
-    def setup(self, *args, **kwargs):
+    def setup(self, *args, **kwargs):  # pylint: disable=inconsistent-return-statements
         super().setup(*args, **kwargs)
         if not self.request.user.is_authenticated:
             return self.handle_no_permission()
