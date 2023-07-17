@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+
 import os
 from pathlib import Path
 
@@ -42,26 +43,18 @@ ALLOWED_HOSTS = []
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
-SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", 60))
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "60"))
 
-SESSION_COOKIE_SECURE = (
-    True if os.getenv("SESSION_COOKIE_SECURE", "False") == "True" else False
-)
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "False") == "True"
 
-CSRF_COOKIE_SECURE = (
-    True if os.getenv("CSRF_COOKIE_SECURE", "False") == "True" else False
-)
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "False") == "True"
 
-SECURE_SSL_REDIRECT = (
-    True if os.getenv("SECURE_SSL_REDIRECT", "False") == "True" else False
-)
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "False") == "True"
 
-SECURE_HSTS_PRELOAD = (
-    True if os.getenv("SECURE_HSTS_PRELOAD", "False") == "True" else False
-)
+SECURE_HSTS_PRELOAD = os.getenv("SECURE_HSTS_PRELOAD", "False") == "True"
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = (
-    True if os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True" else False
+    os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False") == "True"
 )
 
 # Application definition
@@ -131,7 +124,7 @@ else:
             "USER": os.getenv("DB_USER"),
             "PASSWORD": os.getenv("DB_PASS"),
             "HOST": os.getenv("DB_SERVICE"),
-            "PORT": int(os.getenv("DB_PORT", 3306)),
+            "PORT": int(os.getenv("DB_PORT", "3306")),
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO';",
             "default-character-set": "utf8",
         }
@@ -187,7 +180,7 @@ LOGIN_REDIRECT_URL = "/"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-ENABLE_DEBUG_TOOLBAR = bool(os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true")
+ENABLE_DEBUG_TOOLBAR = os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true"
 
 if ENABLE_DEBUG_TOOLBAR:
     print("DEBUG TOOLBAR ENABLED")
