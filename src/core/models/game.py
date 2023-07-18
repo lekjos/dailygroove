@@ -4,6 +4,8 @@ import zoneinfo
 from django.db import models
 from django.urls import reverse
 
+from timezone_field import TimeZoneField
+
 
 def get_timezone_choices():
     return ((x, x) for x in zoneinfo.available_timezones())
@@ -26,9 +28,7 @@ class Game(models.Model):
     frequency = models.PositiveSmallIntegerField(
         choices=Frequency.choices, default=Frequency.WEEKDAYS
     )
-    timezone = models.CharField(
-        choices=get_timezone_choices(), max_length=32, default="America/Los_Angeles"
-    )
+    timezone = TimeZoneField(use_pytz=False)
     round_start_time = models.TimeField(default=datetime.time(hour=10))
 
     def get_absolute_url(self):
