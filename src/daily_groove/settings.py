@@ -28,7 +28,7 @@ ROOT_URL = os.getenv("ROOT_URL", "http://localhost:8000")
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-prod-dead-beef-beef-deaddeadbeef")
 
 env = os.getenv("DJANGO_ENV", "dev")
 
