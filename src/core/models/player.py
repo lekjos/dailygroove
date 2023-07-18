@@ -61,4 +61,8 @@ class Player(models.Model):
             raise ValidationError("both user and name cannot be null")
 
     def __str__(self):
-        return str(self.name) if self.name else str(self.user.username)
+        if self.name:
+            return self.name
+        if self.user:
+            return self.user.username
+        return str("nameless, userless player")
