@@ -1,3 +1,4 @@
+import datetime
 import zoneinfo
 
 from django.db import models
@@ -28,6 +29,7 @@ class Game(models.Model):
     timezone = models.CharField(
         choices=get_timezone_choices(), max_length=32, default="America/Los_Angeles"
     )
+    round_start_time = models.TimeField(default=datetime.time(hour=10))
 
     def get_absolute_url(self):
         return reverse("game-view", kwargs={"slug": self.slug})
