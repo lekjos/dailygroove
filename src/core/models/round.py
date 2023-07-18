@@ -162,7 +162,7 @@ class Round(models.Model):
                     .apply(lambda x: x.sample(n=1))
                     .reset_index(drop=True)
                 )
-                self.submission = random_submissions.sample(n=1)["pk"].values[0]
+                self.submission_id = random_submissions.sample(n=1).values[0]
             else:
                 raise NoEligibleSubmissionsError() from e
 
