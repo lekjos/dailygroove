@@ -102,6 +102,8 @@ class Round(models.Model):
         "core.player",
         related_name="wins",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     submission = models.ForeignKey(
         "core.submission",

@@ -6,15 +6,23 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
+class UserNameValidator(UnicodeUsernameValidator):
+    regex = r"^[\w.@+ -]+\Z"
+    message = message = _(
+        "Enter a valid username. This value may contain only letters, "
+        "numbers, and @/./+/-/_, and the space character."
+    )
+
+
 class User(AbstractBaseUser, PermissionsMixin):
-    username_validator = UnicodeUsernameValidator()
+    username_validator = UserNameValidator()
 
     username = models.CharField(
         _("username"),
         max_length=150,
         unique=True,
         help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+            "Required--This is your in-game display name. 150 characters or fewer. Letters, spaces, digits and @/./+/-/_ only."
         ),
         validators=[username_validator],
         error_messages={
