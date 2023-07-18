@@ -31,4 +31,4 @@ class UploadFormAllGames(forms.ModelForm):
                     "pk", flat=True
                 )
             )
-        super().save(self)
+        super().save(self)  # pylint: disable=redundant-keyword-arg

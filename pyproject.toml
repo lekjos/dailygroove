@@ -9,13 +9,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 crispy-bootstrap4 = "*"
-django = "^4.2.3"
+django = "^3.2"
 django-anymail = "^10.0"
 django-crispy-forms = "*"
 django-extensions = "^3.2.3"
 pandas = "^2.0.3"
 python-dotenv = "^1.0.0"
-psycopg2-binary = "^2.9.6"
+mysqlclient = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black= "^23.3.0"

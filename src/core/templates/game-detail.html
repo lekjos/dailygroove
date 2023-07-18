@@ -1,22 +1,35 @@
 {% extends 'base.html' %}
 {% block page_content %}
-  <h1>Game {{ object.name }}</h1>
+  <h1>{{ object.name }}</h1>
 
   <div class="container">
     <div class="row">
       <div class="col-md">
-        <div class="card">
+        <div class="card mt-4">
           <div class="card-header">Current Round</div>
-          <a href="{{current_round.url}}">{{current_round.title}}</a>
-          <p>{% if not round.winner %}Round Ends at: {% else %}Next Round Begins at: {% endif %}{{current_round.next_round}}</p>
           <div class="card-body">
+            <a href="{{current_round.submission.url}}">{% if current_round.submission.title %}{{current_round.submission.title}}{% else %}{{current_round.submission.url}}{% endif %}</a>
+            {% if not current_round.winner %}
+              {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
+                {% if moderator %}
+                  <form method="post">
+                    {% csrf_token %}
+                    {{form}}
+                    <button class="btn btn-primary btn-block" type="submit">Submit Groove</button>
+                  </form>
+                {% endif %}
+            {% elif current_round.next_round_at %}
+              <p>Winner: {{current_round.winner}}</p>
+              <p>Next round begins at: {{ current_round.next_round_at|date }}
+            {% endif %}
           </div>
         </div>
+      
       </div>
       <div class="col-md">
-        <div class="card">
+        <div class="card mt-4">
           <div class="card-header">Current Players</div>
-            <table class="table">
+            <table class="table table-sm">
               <thead>
                 <tr>
                   <th>Player</th>
@@ -29,7 +42,7 @@
                   <tr>
                     <th scope="row">{{ player.player_name }}</th>
                     <td>{{ player.submission_count }}</td>
-                    <td>{{ player.most_recent_submission }}</td>
+                    <td>{{ player.most_recent_submission|date }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -43,7 +56,7 @@
     </div>
     <div class="row">
       <div class="col-md">
-        <div class="card">
+        <div class="card my-4 mx-5">
           <div class="card-header">Leaderboard</div>
           <div class="card-body">
             <table class="table">
@@ -59,7 +72,7 @@
                   <tr>
                     <th scope="row">{{ player.player_name }}</th>
                     <td>{{ player.win_count }}</td>
-                    <td>{{ player.most_recent_win }}</td>
+                    <td>{{ player.most_recent_win|date }}</td>
                   </tr>
                 {% endfor %}
               </tbody>
@@ -67,7 +80,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card my-4 mx-5">
           <div class="card-header">Round History</div>
           <div class="card-body">
             <table class="table">

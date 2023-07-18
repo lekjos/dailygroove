@@ -46,55 +46,47 @@ class RoundQuerySet(models.QuerySet):
                     pass
                 case Game.Frequency.DAILY:
                     start_date = now
-                    end_date = timedelta(days=1)
+                    end_date = now
                 case Game.Frequency.WEEKDAYS:
-                    start_date = now - timedelta(days=now.weekday())
+                    start_date = now
                     while start_date.weekday() >= 5:  # Saturday is 5, Sunday is 6
                         start_date -= timedelta(days=1)
 
-                    end_date = start_date + timedelta(days=6 - start_date.weekday())
+                    end_date = start_date
+                    if start_date.weekday() >= 5:
+                        end_date = start_date + timedelta(days=6 - start_date.weekday())
+
                 case Game.Frequency.WEEKLY:
                     start_date = now
-                    if start_date.weekday() < 5:  # Weekday (Monday to Friday)
-                        end_date = start_date
-                    else:  # Weekend (Saturday or Sunday)
-                        days_ahead = (
-                            6 - start_date.weekday()
-                        )  # Number of days until Sunday
-                        end_date = start_date + timedelta(days=days_ahead)
+                    while start_date.weekday() > 0:
+                        start_date -= timedelta(days=1)
+                    end_date = start_date + timedelta(days=6)
 
             return (
                 start_date.replace(hour=0, minute=0, second=0, microsecond=0),
                 end_date.replace(hour=23, minute=59, second=59),
             )
 
-        if isinstance(game, Game):
-            game = game.pk
+        game_id = game.pk if isinstance(game, Game) else game
         start_date, end_date = _get_date_range()
 
         most_recent_round = Round.objects.filter(
-            game_id=game,
+            game_id=game_id,
             datetime__gte=start_date,
-            datetime__lt=now,
-            gamesubmission__isnull=True,
+            datetime__lt=end_date,
         ).order_by("-round_number")
 
-        if now < end_date:
-            most_recent_round = most_recent_round.annotate(
-                next_round_at=models.Value(
-                    end_date, output_field=models.DateTimeField()
-                )
-            )
-        else:
-            most_recent_round = most_recent_round.annotate(
-                round_ends_at=models.Value(
-                    end_date, output_field=models.DateTimeField()
-                )
-            )
-
         if not most_recent_round:
-            return Round.objects.create(game_id=game)
-        return Round.objects.first()
+            most_recent_round = Round.objects.create(game_id=game_id)
+        else:
+            most_recent_round = most_recent_round.first()
+
+        if now < end_date:
+            most_recent_round.next_round_at = end_date
+        else:
+            most_recent_round.round_ends_at = end_date
+
+        return most_recent_round
 
 
 class Round(models.Model):
@@ -102,6 +94,8 @@ class Round(models.Model):
         "core.player",
         related_name="wins",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     submission = models.ForeignKey(
         "core.submission",
@@ -131,21 +125,22 @@ class Round(models.Model):
         self._set_default_round_number()
         self._set_default_submission()
 
-        super().save(*args, *kwargs)
+        super().save()
         GameSubmission.objects.filter(
-            submission_id=self.submission.pk,
+            submission_id=self.submission.pk,  # pylint: disable=no-member
             game_id=self.game.pk,  # pylint: disable=no-member
         ).update(round_id=self.pk)
 
     def _set_default_round_number(self):
-        top_round_number = (
-            Round.objects.filter(game=self.game)
-            .order_by("-round_number")
-            .values_list("round_number", flat=True)
-            .first()
-        ) or 0
+        if not self.round_number:
+            top_round_number = (
+                Round.objects.filter(game=self.game)
+                .order_by("-round_number")
+                .values_list("round_number", flat=True)
+                .first()
+            ) or 0
 
-        self.round_number = top_round_number + 1
+            self.round_number = top_round_number + 1
 
     def _set_default_submission(self):
         from ..models.submission import Submission
@@ -167,7 +162,7 @@ class Round(models.Model):
                     .apply(lambda x: x.sample(n=1))
                     .reset_index(drop=True)
                 )
-                self.submission = random_submissions.sample(n=1)["pk"].values[0]
+                self.submission_id = random_submissions.sample(n=1).values[0]
             else:
                 raise NoEligibleSubmissionsError() from e
 
