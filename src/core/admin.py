@@ -7,6 +7,7 @@ from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from core.models import Game, Player, Round, Submission
+from core.models.game_submission import GameSubmission
 from core.models.user import User
 
 
@@ -60,6 +61,12 @@ class GameAdmin(admin.ModelAdmin):
             player_count=Count("players", distinct=True),
             round_count=Count("round", distinct=True),
         )
+
+
+@admin.register(GameSubmission)
+class GameSubmissionAdmin(admin.ModelAdmin):
+    list_display = ("game", "submission", "round")
+    list_filter = ("game",)
 
 
 @admin.register(Round)
