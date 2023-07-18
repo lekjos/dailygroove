@@ -125,21 +125,22 @@ class Round(models.Model):
         self._set_default_round_number()
         self._set_default_submission()
 
-        super().save(*args, *kwargs)
+        super().save()
         GameSubmission.objects.filter(
             submission_id=self.submission.pk,
             game_id=self.game.pk,  # pylint: disable=no-member
         ).update(round_id=self.pk)
 
     def _set_default_round_number(self):
-        top_round_number = (
-            Round.objects.filter(game=self.game)
-            .order_by("-round_number")
-            .values_list("round_number", flat=True)
-            .first()
-        ) or 0
+        if not self.round_number:
+            top_round_number = (
+                Round.objects.filter(game=self.game)
+                .order_by("-round_number")
+                .values_list("round_number", flat=True)
+                .first()
+            ) or 0
 
-        self.round_number = top_round_number + 1
+            self.round_number = top_round_number + 1
 
     def _set_default_submission(self):
         from ..models.submission import Submission
