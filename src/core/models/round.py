@@ -127,7 +127,7 @@ class Round(models.Model):
 
         super().save()
         GameSubmission.objects.filter(
-            submission_id=self.submission.pk,
+            submission_id=self.submission.pk,  # pylint: disable=no-member
             game_id=self.game.pk,  # pylint: disable=no-member
         ).update(round_id=self.pk)
 
