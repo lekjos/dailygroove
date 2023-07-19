@@ -44,7 +44,7 @@ class Command(BaseCommand):
         game = GameFactory(
             name="Test Game",
             slug="test-game",
-            owner=admin_player,
+            owner=user,
             players=players + [admin_player],
         )
 

@@ -1,3 +1,5 @@
+import contextlib
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
@@ -12,11 +14,6 @@ class UserNameValidator(UnicodeUsernameValidator):
         "Enter a valid username. This value may contain only letters, "
         "numbers, and @/./+/-/_, and the space character."
     )
-
-
-# class UserManagerCustom(UserManager):
-#     def create_superuser(self):
-#         super().create_superuser()
 
 
 class User(AbstractBaseUser, PermissionsMixin):

@@ -2,6 +2,7 @@ import datetime
 import uuid
 import zoneinfo
 
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -24,7 +25,10 @@ class Game(models.Model):
     slug = models.SlugField(primary_key=True)
     players = models.ManyToManyField("core.player")
     owner = models.ForeignKey(
-        "core.player", related_name="owned_games", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="owned_games",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     frequency = models.PositiveSmallIntegerField(
         choices=Frequency.choices, default=Frequency.WEEKDAYS
