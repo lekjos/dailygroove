@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Count, F, Func, OuterRef, Q, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.db.models.functions import Coalesce
 
 if TYPE_CHECKING:
