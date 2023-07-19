@@ -18,18 +18,9 @@ class UserFactory(DjangoModelFactory):
         django_get_or_create = ("username",)
 
 
-class PlayerFactory(DjangoModelFactory):
-    user = factory.SubFactory(UserFactory)
-    name = None
-
-    class Meta:
-        model = Player
-        django_get_or_create = ("user",)
-
-
 class GameFactory(DjangoModelFactory):
     name = factory.Faker("word")
-    owner = factory.SubFactory(PlayerFactory)
+    owner = factory.RelatedFactory("core.models.factories.PlayerFactory")
     slug = factory.Faker("slug")
 
     class Meta:
@@ -53,6 +44,16 @@ class GameFactory(DjangoModelFactory):
         if extracted:
             for player in extracted:
                 self.players.add(player)  # pylint: disable=no-member
+
+
+class PlayerFactory(DjangoModelFactory):
+    user = factory.SubFactory(UserFactory)
+    name = None
+    game = factory.SubFactory(GameFactory)
+
+    class Meta:
+        model = Player
+        django_get_or_create = ("user",)
 
 
 class SubmissionFactory(DjangoModelFactory):

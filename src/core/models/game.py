@@ -23,7 +23,7 @@ class Game(models.Model):
 
     name = models.CharField(max_length=256)
     slug = models.SlugField(primary_key=True)
-    players = models.ManyToManyField("core.player")
+    players = models.ManyToManyField("core.user", through="core.player")
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="owned_games",

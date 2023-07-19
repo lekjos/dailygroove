@@ -14,6 +14,6 @@ class Dashboard(TemplateView):
         context["user"] = user
         if self.request.user.is_authenticated:
             context["active_games"] = Game.objects.filter(
-                Q(players__user__pk=user.pk) | Q(owner_id=user.pk)
+                Q(players__pk=user.pk) | Q(owner_id=user.pk)
             ).distinct()
         return context

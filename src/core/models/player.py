@@ -22,7 +22,7 @@ class PlayerQuerySet(models.QuerySet):
         from core.models.submission import Submission
 
         recent_sqry = Subquery(
-            Submission.objects.filter(user_id=OuterRef("user__pk"), games=game)
+            Submission.objects.filter(user_id=OuterRef("user_id"), games=game)
             .order_by("datetime")
             .values("datetime")[:1]
         )
@@ -52,6 +52,7 @@ class Player(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
+    game = models.ForeignKey("core.game", on_delete=models.CASCADE)
     role = models.PositiveSmallIntegerField(default=Roles.PLAYER)
 
     objects: PlayerQuerySet = PlayerQuerySet.as_manager()

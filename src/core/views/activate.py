@@ -24,8 +24,9 @@ def activate_view(request, uidb64, token):
         user.save()
         login(request, user)
         return redirect("dashboard")
+    msg = f"invalid account activation detected: uidb64:{uidb64} token:{token}"
     logger.exception(
-        f"invalid account activation detected: uidb64:{uidb64} token:{token}",
+        msg,
         user,
         account_activation_token.check_token(user, token),
     )

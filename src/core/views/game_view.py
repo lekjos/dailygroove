@@ -145,7 +145,7 @@ class GameView(FormMixin, DetailView):
         if form.is_valid() and action == "declare_winner":
             form.save()
             return self.form_valid(form)
-        elif form.is_valid() and action == "reveal":
+        if form.is_valid() and action == "reveal":
             return self.render_to_response(
                 self.get_context_data(
                     form=form,

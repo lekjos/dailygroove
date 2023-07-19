@@ -30,11 +30,11 @@ ROOT_URL = os.getenv("ROOT_URL", "http://localhost:8000")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-prod-dead-beef-beef-deaddeadbeef")
 
-env = os.getenv("DJANGO_ENV", "dev")
+ENV = os.getenv("DJANGO_ENV", "dev")
 
-if env == "dev":
+if ENV == "dev":
     DEBUG = True
-elif env == "prod":
+elif ENV == "prod":
     DEBUG = False
 else:
     raise ValueError("Invalid Django Environment")
@@ -105,7 +105,7 @@ WSGI_APPLICATION = os.getenv("WSGI_APPLICATION", "daily_groove.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if env == "dev":
+if ENV == "dev":
     print("USING LOCAL SQLITE TEST DB")
     DATABASES = {
         "default": {
