@@ -14,13 +14,18 @@ class UserNameValidator(UnicodeUsernameValidator):
     )
 
 
+class UserManagerCustom(UserManager):
+    def create_superuser(self):
+        super().create_superuser()
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username_validator = UserNameValidator()
 
     username = models.CharField(
         _("username"),
         max_length=150,
-        unique=True,
+        null=True,
         help_text=_(
             "Required--This is your in-game display name. 150 characters or fewer. Letters, spaces, digits and @/./+/-/_ only."
         ),
@@ -30,7 +35,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         },
     )
 
-    email = models.EmailField(_("email address"), blank=True)
+    email = models.EmailField(
+        _("email address"), unique=True, primary_key=True, blank=True
+    )
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -49,9 +56,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
+    REQUIRED_FIELDS = ["username"]
 
     class Meta:
         verbose_name = _("user")
