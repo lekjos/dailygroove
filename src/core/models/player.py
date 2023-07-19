@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import F, Func, OuterRef, Subquery
+from django.db.models import F, Func, OuterRef, Q, Subquery
 from django.db.models.functions import Coalesce
 
 if TYPE_CHECKING:
@@ -33,7 +33,8 @@ class PlayerQuerySet(models.QuerySet):
 
         fresh_subquery = Subquery(
             GameSubmission.objects.filter(
-                game=game, submission__user=OuterRef("user"), round__isnull=True
+                Q(game=game, submission__user=OuterRef("user"))
+                & (Q(round__isnull=True) | Q(round__winner__isnull=True))
             )
             .annotate(count=Func(F("pk"), function="Count"))
             .values("count")
