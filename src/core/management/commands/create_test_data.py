@@ -5,6 +5,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
+import factory
+
 from core.models import Round, User
 from core.models.factories import GameFactory, PlayerFactory, SubmissionFactory
 from core.models.game import Game
@@ -37,18 +39,22 @@ class Command(BaseCommand):
             email="admin@admin.admin",
             password="test",
         )
-        admin_player = PlayerFactory(user=user, name=None)
-
-        players = PlayerFactory.create_batch(5)
-
         game = GameFactory(
             name="Test Game",
             slug="test-game",
             owner=user,
-            players=players + [admin_player],
         )
+        admin_player = PlayerFactory(user=user, name=None, game=game)
 
-        submissions = SubmissionFactory.create_batch(15, games=[game])
+        players = PlayerFactory.create_batch(5, game=game)
+
+        users = User.objects.filter(player__in=list(players) + [admin_player])
+
+        submissions = SubmissionFactory.create_batch(
+            15,
+            games=[game],
+            user=factory.Iterator([random.choice(users) for _ in range(15)]),
+        )
 
         round_num = 0
         for i, submission in enumerate(submissions):

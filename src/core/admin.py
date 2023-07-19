@@ -11,10 +11,16 @@ from core.models.game_submission import GameSubmission
 from core.models.user import User
 
 
+class PlayerInline(admin.TabularInline):
+    model = Player
+
+
 @admin.register(User)
 class UserAdminCustom(UserAdmin):
     list_display = ("username", "email", "is_staff")
     search_fields = ("username", "email")
+    inlines = [PlayerInline]
+
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Personal info"), {"fields": ("email", "email_confirmed")}),
@@ -46,6 +52,7 @@ class PlayerAdmin(admin.ModelAdmin):
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
     list_display = ("name", "slug", "player_count", "round_count")
+    inlines = [PlayerInline]
 
     def player_count(self, obj):
         return obj.player_count
