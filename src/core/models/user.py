@@ -62,6 +62,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
+    def get_display_name(self, game=None):
+        from core.models.player import Player
+
+        if game:
+            with contextlib.suppress(Player.DoesNotExist):
+                player = Player.objects.get(user_id=self.pk, games=game)
+                return player.name
+        return self.username
+
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)

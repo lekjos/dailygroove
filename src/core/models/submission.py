@@ -32,7 +32,7 @@ class Submission(models.Model):
     )
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.user.username} - {self.title}"
 
     class Meta:
         pass

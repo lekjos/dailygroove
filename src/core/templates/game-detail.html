@@ -13,12 +13,22 @@
               {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
                 {% if moderator %}
                   <form method="post">
+                    {% if submitted_by %}<p>Submitted by: {{submitted_by}}</p>{% endif %}
                     {% csrf_token %}
                     {{form}}
-                    <button class="btn btn-primary btn-block" type="submit">Declare Winner</button>
+                    {% if form %}
+                    <div class="form-row">
+                      <div class="col">
+                        <button class="btn btn-primary btn-block" type="submit" name="action" value="declare_winner">Declare Winner</button>
+                      </div>
+                      <div class="col">
+                        <button class="btn btn-primary btn-block" type="submit" name="action" value="reveal">Reveal Submitter</button>
+                      </div>
+                    </div>
+                    {% endif %}
                   </form>
                 {% endif %}
-            {% elif current_round.next_round_at %}
+            {% elif current_round.next_round_at and current_round.winner %}
               <p>Winner: {{current_round.winner}}</p>
               <p>Next round begins at: {{ current_round.next_round_at|date }}
             {% endif %}

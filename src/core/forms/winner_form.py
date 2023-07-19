@@ -13,7 +13,10 @@ class WinnerForm(forms.ModelForm):
         self.moderator_id = moderator_id
         super().__init__(*args, **kwargs)
 
-        self.fields["winner"].choices = ((x["pk"], x["player_name"]) for x in players)
+        player_choices = [{"pk": None, "player_name": "-----"}] + list(players)
+        self.fields["winner"].choices = (
+            (x["pk"], x["player_name"]) for x in player_choices
+        )
 
     def save(self, commit=True):
         self.instance.moderator_id = self.moderator_id

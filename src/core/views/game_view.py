@@ -120,8 +120,8 @@ class GameView(FormMixin, DetailView):
     def get_context_data(self, **kwargs):
         if "form" not in kwargs:
             kwargs["form"] = self.get_form()
-
-        context = super().get_context_data(**kwargs)
+        context = kwargs
+        context["object"] = self.game
         context["page_title"] = self.game.name
         context["leader_board"] = self.leader_board
         context["rounds"] = self.rounds
@@ -141,9 +141,17 @@ class GameView(FormMixin, DetailView):
         POST variables and then check if it's valid.
         """
         form = self.get_form()
-        if form.is_valid():
+        action = request.POST.get("action")
+        if form.is_valid() and action == "declare_winner":
             form.save()
             return self.form_valid(form)
+        elif form.is_valid() and action == "reveal":
+            return self.render_to_response(
+                self.get_context_data(
+                    form=form,
+                    submitted_by=self.current_round.submission.user.get_display_name(),
+                )
+            )
         return self.form_invalid(form)
 
     def put(self, *args, **kwargs):
