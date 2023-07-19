@@ -22,11 +22,11 @@ class UserNameValidator(UnicodeUsernameValidator):
 class User(AbstractBaseUser, PermissionsMixin):
     username_validator = UserNameValidator()
     username = models.CharField(
-        _("username"),
+        _("Display Name"),
         max_length=150,
         null=True,
         help_text=_(
-            "Required--This is your in-game display name. 150 characters or fewer. Letters, spaces, digits and @/./+/-/_ only."
+            "This is your in-game display name. Letters, spaces, digits and @/./+/-/_ ok. 150 chr max."
         ),
         validators=[username_validator],
         error_messages={

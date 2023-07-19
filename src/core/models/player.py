@@ -44,8 +44,8 @@ class PlayerQuerySet(models.QuerySet):
 
 class Player(models.Model):
     class Roles(models.IntegerChoices):
-        PLAYER = 1
-        MODERATOR = 2
+        PLAYER = 1, "Player"
+        MODERATOR = 2, "Moderator"
 
     name = models.CharField(max_length=256, null=True, blank=True)
     user = models.ForeignKey(

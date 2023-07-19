@@ -39,8 +39,6 @@ elif env == "prod":
 else:
     raise ValueError("Invalid Django Environment")
 
-ALLOWED_HOSTS = []
-
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
 
 SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "60"))
