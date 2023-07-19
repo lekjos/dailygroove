@@ -17,7 +17,7 @@ class UserAdminCustom(UserAdmin):
     search_fields = ("username", "email")
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("email",)}),
+        (_("Personal info"), {"fields": ("email", "email_confirmed")}),
         (
             _("Permissions"),
             {

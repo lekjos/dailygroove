@@ -15,7 +15,7 @@
                   <form method="post">
                     {% csrf_token %}
                     {{form}}
-                    <button class="btn btn-primary btn-block" type="submit">Submit Groove</button>
+                    <button class="btn btn-primary btn-block" type="submit">Declare Winner</button>
                   </form>
                 {% endif %}
             {% elif current_round.next_round_at %}

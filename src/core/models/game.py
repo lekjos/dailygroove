@@ -1,4 +1,5 @@
 import datetime
+import uuid
 import zoneinfo
 
 from django.db import models
@@ -30,6 +31,7 @@ class Game(models.Model):
     )
     timezone = TimeZoneField(use_pytz=False)
     round_start_time = models.TimeField(default=datetime.time(hour=10))
+    invite_token = models.UUIDField(default=uuid.uuid4)
 
     def get_absolute_url(self):
         return reverse("game-view", kwargs={"slug": self.slug})
