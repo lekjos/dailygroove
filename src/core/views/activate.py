@@ -20,8 +20,7 @@ def activate_view(request, uidb64, token):
         user.save()
         login(request, user)
         return redirect("dashboard")
-    else:
-        return render(request, "account_activation_invalid.html")
+    return render(request, "account_activation_invalid.html")
 
 
 def account_activation_sent_view(request):
