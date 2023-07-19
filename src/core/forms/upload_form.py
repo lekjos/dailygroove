@@ -27,8 +27,6 @@ class UploadFormAllGames(forms.ModelForm):
         if commit:
             self.instance.save()
             self.instance.games.set(
-                Game.objects.filter(players__user=self.user).values_list(
-                    "pk", flat=True
-                )
+                Game.objects.filter(players=self.user).values_list("pk", flat=True)
             )
         super().save(self)  # pylint: disable=redundant-keyword-arg
