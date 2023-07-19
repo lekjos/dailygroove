@@ -14,5 +14,5 @@ class Dashboard(TemplateView):
         context["user"] = user
         context["active_games"] = Game.objects.filter(
             Q(players__user__pk=user.pk) | Q(owner__pk=user.pk)
-        )
+        ).distinct()
         return context
