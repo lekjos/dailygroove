@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth import login
 from django.shortcuts import redirect, render
 from django.utils.encoding import force_text
@@ -5,6 +7,8 @@ from django.utils.http import urlsafe_base64_decode
 
 from core.models import User
 from core.tokens import account_activation_token
+
+logger = logging.getLogger(__name__)
 
 
 def activate_view(request, uidb64, token):
@@ -20,6 +24,11 @@ def activate_view(request, uidb64, token):
         user.save()
         login(request, user)
         return redirect("dashboard")
+    logger.exception(
+        f"invalid account activation detected: uidb64:{uidb64} token:{token}",
+        user,
+        account_activation_token.check_token(user, token),
+    )
     return render(request, "account_activation_invalid.html")
 
 

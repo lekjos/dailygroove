@@ -15,6 +15,7 @@ def signup_view(request):
         if form.is_valid():
             user: User = form.save(commit=False)
             user.is_active = False
+            user.email_confirmed = False
             user.save()
             current_site = get_current_site(request)
             subject = "Activate Your Daily Groove"
