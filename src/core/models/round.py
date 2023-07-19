@@ -1,4 +1,3 @@
-import zoneinfo
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Union
 
@@ -36,7 +35,7 @@ class RoundQuerySet(models.QuerySet):
     def current_round(self, game: Union["Game", int]):
         from core.models.game import Game
 
-        game_tz = zoneinfo.ZoneInfo(game.timezone)
+        game_tz = game.timezone
         frequency = game.frequency
         now: datetime = datetime.now(game_tz)
 

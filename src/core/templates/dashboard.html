@@ -11,10 +11,14 @@
   </div>
   {% if request.user.is_authenticated %}
     <h2>Active Games</h2>
-    <ul class="list-group">
-      {% for game in active_games %}
-        <a class="list-group-item list-group-item-action" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
-      {% endfor %}
-    </ul>
+    {% if active_games %}
+      <ul class="list-group">
+        {% for game in active_games %}
+          <a class="list-group-item list-group-item-action" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>You are not a member of any games!</p>
+    {% endif %}
   {% endif %}
 {% endblock %}

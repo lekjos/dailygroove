@@ -14,14 +14,13 @@ class UserNameValidator(UnicodeUsernameValidator):
     )
 
 
-class UserManagerCustom(UserManager):
-    def create_superuser(self):
-        super().create_superuser()
+# class UserManagerCustom(UserManager):
+#     def create_superuser(self):
+#         super().create_superuser()
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     username_validator = UserNameValidator()
-
     username = models.CharField(
         _("username"),
         max_length=150,
@@ -35,9 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         },
     )
 
-    email = models.EmailField(
-        _("email address"), unique=True, primary_key=True, blank=True
-    )
+    email = models.EmailField(_("email address"), unique=True, blank=True)
 
     is_staff = models.BooleanField(
         _("staff status"),
@@ -53,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    email_confirmed = models.BooleanField(default=False)
 
     objects = UserManager()
 

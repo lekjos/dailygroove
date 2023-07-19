@@ -6,29 +6,31 @@
 {% block page_content %}
     <div class="wrapper fadeInDown">
         <div id="formContent"></div>
-            <!-- Icon -->
-            <div class="fadeIn first">
-                <img src="{% static 'img/logo.jpg' %}" id="icon" alt="User Icon" />
-            </div>
-            {% if form.errors %}
-                <div class="alert alert-formContent">
-                    <p><strong>{% trans "Oh snap!" %}</strong> {% trans "Please enter a correct username and password. Note that both fields are case-sensitive." %}</p>
+
+        <!-- Login Form -->
+        <form class="form-signin" action="{% url 'login' %}" method="post">
+                {% if form.errors %}
+                    <div class="alert alert-formContent">
+                        <p><strong>{% trans "Oh snap!" %}</strong> {% trans "Please enter a correct username and password. Note that both fields are case-sensitive." %}</p>
+                    </div>
+                {% endif %}
+                <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
+                {% csrf_token %}
+                <input type="text" name="username" class="form-control" placeholder="email" autofocus autocapitalize="none" autocomplete="username" maxlength="254" required id="id_username">
+                <input type="password" name="password" autocomplete="current-password" placeholder="Password" class="form-control" required id="id_password">
+                <div class="checkbox mb-3">
+                  <label>
+                    <input value="remember-me" type="checkbox"> Remember me
+                  </label>
                 </div>
-            {% endif %}
-            <!-- Login Form -->
-            <form action="{% url 'login' %}" method="post" class="form-horizontal" role="form">{% csrf_token %}
-                <div class = "fadeIn second">{{ form.username.errors }}
-                    {{ form.username }}
-                </div>
-                <div class = "fadeIn third">{{ form.password.errors }}
-                    {{ form.password }}
-                </div>
-                <input type="submit" class="fadeIn fourth" value="Log In">
+                <input type="hidden" name="initial-password" id="initial-id_password">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
             </form>
             
             <!-- Remind Passowrd -->
             <div id="formFooter">
                 <a class="underlineHover" href="{% url 'password_reset' %}">Forgot Password?</a>
+                <p>Need any account? <a class="underlineHover" href="{% url 'signup' %}">Sign Up</a></p>
         </div>
     </div>
         
