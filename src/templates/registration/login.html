@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load core_tags %}
 {% block title %}Login{% endblock %}
 {% block extra_style %}<link href="{% static 'css/login.css' %}" rel="stylesheet">{% endblock %}
 {% block page_content %}
@@ -30,7 +31,7 @@
             <!-- Remind Passowrd -->
             <div id="formFooter">
                 <a class="underlineHover" href="{% url 'password_reset' %}">Forgot Password?</a>
-                <p>Need any account? <a class="underlineHover" href="{% url 'signup' %}">Sign Up</a></p>
+                <p>Need any account? <a class="underlineHover" href="{% url 'signup' %}?{% param_replace %}">Sign Up</a></p>
         </div>
     </div>
         

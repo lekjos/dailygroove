@@ -3,7 +3,17 @@ from typing import TYPE_CHECKING
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import F, Func, OuterRef, Q, Subquery
+from django.db.models import (
+    BooleanField,
+    Case,
+    F,
+    Func,
+    OuterRef,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
 from django.db.models.functions import Coalesce
 
 if TYPE_CHECKING:
@@ -41,6 +51,15 @@ class PlayerQuerySet(models.QuerySet):
         )
 
         return self.annotate(submission_count=fresh_subquery)
+
+    def annotate_has_user(self):
+        return self.annotate(
+            has_user=Case(
+                When(user__isnull=False, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
 
 
 class Player(models.Model):

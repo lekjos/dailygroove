@@ -25,8 +25,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.Dashboard.as_view(), name="dashboard"),
     path("uploads/", views.UploadsView.as_view(), name="uploads"),
-    path("<slug:slug>", views.GameView.as_view(), name="game-view"),
+    path("<slug:slug>/", views.GameView.as_view(), name="game_detail"),
     path("signup/", views.signup_view, name="signup"),
+    path("<slug:slug>/manage/", views.ManageGameView.as_view(), name="manage_game"),
+    path("<slug:slug>/invite/", views.PlayerInviteView.as_view(), name="player_invite"),
     path(
         "account_activation_sent/",
         views.account_activation_sent_view,

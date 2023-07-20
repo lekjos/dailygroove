@@ -112,7 +112,7 @@ class GameView(FormMixin, DetailView):
         )
 
     def get_success_url(self) -> str:
-        return reverse("game-view", kwargs={"slug": self.kwargs["slug"]})
+        return reverse("game_detail", kwargs={"slug": self.kwargs["slug"]})
 
     def get_object(self, *args, **kwargs):
         return self.game
