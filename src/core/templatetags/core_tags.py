@@ -1,4 +1,8 @@
+import re
+
 from django import template
+
+from core.middleware.invite_token_middleware import replace_url_params
 
 register = template.Library()
 
@@ -24,9 +28,32 @@ def param_replace(context, **kwargs):
     Based on
     https://stackoverflow.com/questions/22734695/next-and-before-links-for-a-django-paginated-query/22735278#22735278
     """
-    d = context["request"].GET.copy()
-    for k, v in kwargs.items():
-        d[k] = v
-    for k in [k for k, v in d.items() if not v]:
-        del d[k]
-    return d.urlencode()
+    return replace_url_params(context["request"], **kwargs)
+
+
+def get_youtube_embed(url):
+    # Check if the link is from youtube.com or youtu.be
+    if "youtube.com/watch?v=" in url:
+        video_id = url.split("youtube.com/watch?v=")[1][:11]
+    elif "youtu.be/" in url:
+        video_id = url.split("youtu.be/")[1][:11]
+    else:
+        return False
+
+    embed_link = f"https://www.youtube.com/embed/{video_id}"
+    return embed_link
+
+
+@register.filter(name="youtube_embed_url")
+# converts youtube URL into embed HTML
+# value is url
+def youtube_embed_url(url, title=""):
+    embed_url = get_youtube_embed(url)
+    if embed_url:
+        res = f'<iframe width="560" height="315" src="{embed_url}" title="{title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'
+        return res
+
+    return f"<a target='_blank' href='{url}'>{title if title else url}</a>"
+
+
+youtube_embed_url.is_safe = True
