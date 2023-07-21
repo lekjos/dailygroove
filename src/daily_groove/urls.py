@@ -25,14 +25,20 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.Dashboard.as_view(), name="dashboard"),
     path("uploads/", views.UploadsView.as_view(), name="uploads"),
-    path("<slug:slug>", views.GameView.as_view(), name="game-view"),
     path("signup/", views.signup_view, name="signup"),
     path(
         "account_activation_sent/",
         views.account_activation_sent_view,
         name="account_activation_sent",
     ),
-    path("activate/<str:uidb64>/<str:token>/", views.activate_view, name="activate"),
+    path(
+        "activate/<str:uidb64>/<str:token>/", views.activate_view, name="activate"
+    ),  # HARDCODED IN invite_token_middleware.py, ALSO UPDATE THERE
+    path("g/<slug:slug>/", views.GameView.as_view(), name="game_detail"),
+    path("g/<slug:slug>/manage/", views.ManageGameView.as_view(), name="manage_game"),
+    path(
+        "g/<slug:slug>/invite/", views.PlayerInviteView.as_view(), name="player_invite"
+    ),
 ]
 
 if settings.ENABLE_DEBUG_TOOLBAR:

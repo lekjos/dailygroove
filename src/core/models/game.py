@@ -38,7 +38,7 @@ class Game(models.Model):
     invite_token = models.UUIDField(default=uuid.uuid4)
 
     def get_absolute_url(self):
-        return reverse("game-view", kwargs={"slug": self.slug})
+        return reverse("game_detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return str(self.name)

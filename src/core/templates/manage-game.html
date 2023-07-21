@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
+{% endblock %}
+
+{% block page_content %}
+<div class="container position-parent mb-5">
+    <a class="btn btn-secondary top-right" href="{% url 'player_invite' slug=game.slug %}">Invite Player</a>
+</div>
+  <div class="container justify-content-center">
+    <table class="table table-sm mt-5">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Linked to User</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in object_list %}
+          <tr>
+            <th scope="row">{{ object.player_name }}</th>
+            <td>{{ object.has_user }}</td>
+            <td></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

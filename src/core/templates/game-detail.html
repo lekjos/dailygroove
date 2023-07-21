@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block extra_style %}
+{% load crispy_forms_tags %}
+{% load core_tags %}
+<link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
+{% endblock %}
 {% block page_content %}
-  <h1>{{ object.name }}</h1>
-
-  <div class="container">
+<div class="container position-parent">
+    <h1>{{ object.name }}</h1>
+    {% if moderator %}<a class="btn btn-secondary top-right" href="{% url 'manage_game' slug=object.slug %}">Manage</a>{% endif %}
     <div class="row">
       <div class="col-md">
         <div class="card mt-4">
           <div class="card-header">Current Round</div>
           <div class="card-body">
-            <a href="{{current_round.submission.url}}">{% if current_round.submission.title %}{{current_round.submission.title}}{% else %}{{current_round.submission.url}}{% endif %}</a>
+            {{ current_round.submission.url|youtube_embed_url:current_round.submission.title|safe }}
             {% if not current_round.winner %}
               {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
                 {% if moderator %}
                   <form method="post">
                     {% if submitted_by %}<p>Submitted by: {{submitted_by}}</p>{% endif %}
                     {% csrf_token %}
-                    {{form}}
+                    {% crispy form %}
                     {% if form %}
                     <div class="form-row">
                       <div class="col">

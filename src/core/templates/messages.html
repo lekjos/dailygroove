@@ -1,0 +1,48 @@
+{% comment %} {% if messages %}
+<!-- messages modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="sendErrors" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content text-justify">
+            <div class="modal-header">
+                <h4 class="modal-title text-danger">{% if message_modal_title %}{{message_modal_title}}{% else %}Heads Up{% endif %}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                {% for message in messages %}
+                    <div {% if message.tags %} class="alert {{ message.tags }}"{% endif %} role="alert">
+                    {% if 'safe' in message.tags %}
+                        {{ message|safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
+                    </div>
+                {% endfor %}
+            </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(window).on('load', function() {
+        $('#sendErrors').modal('show');
+    });
+</script>
+{% endif%} {% endcomment %}
+{% if messages %}
+  <div class="container fixed-bottom" style="margin-bottom: 60px;">
+    <div class="row justify-content-end">
+      <div class="col-md-8 col-lg-6">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}
