@@ -39,13 +39,13 @@ To accept, click the link below and create an account if you don't have one alre
         return context
 
     def get_success_url(self) -> str:
-        return reverse("manage_game", slug=self.kwargs.slug)
+        return reverse("manage_game", kwargs={"slug": self.kwargs["slug"]})
 
     def form_valid(self, form):
         sender_name = self.request.user.username
         subject = f"Invite to join {sender_name}'s game on Daily Groove"
         message = self.invite_message
-        send_mail(
+        send_mail(  # pylint: disable=no-value-for-parameter
             subject=subject,
             message=message,
             recipient_list=[form.cleaned_data["recipient_email"]],

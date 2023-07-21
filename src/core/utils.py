@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from django.utils.http import urlencode
 
 
-def replace_url_params(request, skip_encode_params: List[str] = [], **kwargs):
+def replace_url_params(
+    request, skip_encode_params: Optional[List[str]] = None, **kwargs
+):
     """
     replaces kwargs in a url
     """
@@ -20,8 +22,7 @@ def replace_url_params(request, skip_encode_params: List[str] = [], **kwargs):
             def _encode(k, v) -> str:
                 if k in skip_encode_params:
                     return f"{k}={v}"
-                else:
-                    return urlencode({k: v})
+                return urlencode({k: v})
 
             params = "&".join([_encode(k, v) for k, v in params.items()])
             return f"?{params}"

@@ -1,5 +1,3 @@
-import re
-
 from django import template
 
 from core.middleware.invite_token_middleware import replace_url_params
