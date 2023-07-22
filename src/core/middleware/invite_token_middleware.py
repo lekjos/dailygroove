@@ -30,7 +30,7 @@ class InviteTokenMiddleware(MiddlewareMixin):
     def process_request(self, request: HttpRequest) -> Optional[HttpResponseRedirect]:
         # Check if the user is logged in
         if invite_token := request.GET.get("invite_token"):
-            if request.user.is_authenticated:
+            if hasattr(request, "user") and request.user.is_authenticated:
                 accept_game_invite(request, invite_token)
                 # Remove the 'invite_token' parameter from the request
                 request.GET._mutable = True  # pylint: disable=protected-access

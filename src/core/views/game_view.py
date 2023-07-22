@@ -144,10 +144,10 @@ class GameView(FormMixin, DetailView):
         """
         form = self.get_form()
         action = request.POST.get("action")
-        if form.is_valid() and action == "declare_winner":
+        if form.is_valid() and action == "Declare Winner":
             form.save()
             return self.form_valid(form)
-        if form.is_valid() and action == "reveal":
+        if form.is_valid() and action == "Reveal Submitter":
             return self.render_to_response(
                 self.get_context_data(
                     form=form,

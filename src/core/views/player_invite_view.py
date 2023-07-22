@@ -45,9 +45,10 @@ To accept, click the link below and create an account if you don't have one alre
         sender_name = self.request.user.username
         subject = f"Invite to join {sender_name}'s game on Daily Groove"
         message = self.invite_message
-        send_mail(  # pylint: disable=no-value-for-parameter
+        send_mail(
             subject=subject,
             message=message,
+            from_email=None,
             recipient_list=[form.cleaned_data["recipient_email"]],
         )
         return HttpResponseRedirect(self.get_success_url())
