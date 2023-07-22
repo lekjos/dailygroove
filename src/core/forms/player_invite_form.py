@@ -1,20 +1,8 @@
 from django import forms
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from .base_crispy_form import BaseCrispyForm
 
 
-class PlayerInviteForm(forms.Form):
+class PlayerInviteForm(BaseCrispyForm):
     recipient_email = forms.EmailField()
-
-    def __init__(self, *args, **kwargs):
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.add_input(
-            Submit(
-                name="action",
-                value="Send Invite",
-            )
-        )
-
-        super().__init__(*args, **kwargs)
+    SUBMIT_BUTTON_VALUE = "Send Invite"

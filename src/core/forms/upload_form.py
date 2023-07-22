@@ -1,15 +1,12 @@
 from django import forms
 
+from core.forms.base_crispy_form import BaseCrispyForm
 from core.models.submission import Submission
 
 
-class UploadFormSelectGame(forms.ModelForm):
-    class Meta:
-        model = Submission
-        fields = ["url", "title"]
+class UploadFormAllGames(BaseCrispyForm, forms.ModelForm):
+    SUBMIT_BUTTON_VALUE = "Submit Groove"
 
-
-class UploadFormAllGames(forms.ModelForm):
     class Meta:
         model = Submission
         fields = [
@@ -23,7 +20,5 @@ class UploadFormAllGames(forms.ModelForm):
 
     def save(self, commit=True):
         self.instance.user = self.user
-        if commit:
-            self.instance.save()
 
-        super().save(self)  # pylint: disable=redundant-keyword-arg
+        super().save()
