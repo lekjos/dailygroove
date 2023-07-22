@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING
-
+# pylint: disable=cyclic-import
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -14,9 +13,6 @@ from django.db.models import (
     When,
 )
 from django.db.models.functions import Coalesce
-
-if TYPE_CHECKING:
-    from .game import Game
 
 
 class PlayerQuerySet(models.QuerySet):
