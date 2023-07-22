@@ -24,6 +24,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install --with dev
+    - name: Prepare environment artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: environment
+        path: ${{ env.PYTHON_LOCATION }}
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download environment artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: environment
+        path: ${{ env.PYTHON_LOCATION }}  # This should match the path used in the setup job
     - name: Analyzing the code with pylint
       run: |
         poetry run pylint --load-plugins=pylint_django --django-settings-module=daily_groove.settings ./src
@@ -32,11 +45,16 @@ jobs:
         poetry run black . --check
 
   test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.10"]
-    runs-on: ubuntu-latest
     steps:
-      - name: Run Unit Tests
-        run: |
-          poetry run pytest src
+    - name: Download environment artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: environment
+        path: ${{ env.PYTHON_LOCATION }}  # This should match the path 
+    - name: Run Unit Tests
+      run: |
+        poetry run pytest src
