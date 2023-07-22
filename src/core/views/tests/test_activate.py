@@ -13,6 +13,7 @@ class TestActivateInvalid(ViewTest):
     URL = "activate"
     URL_KWARGS = {"uidb64": "asdfasdf", "token": "asdfasdfa"}
     TEMPLATE = "account_activation_invalid.html"
+    MAX_QUERIES = 3
 
     @pytest.fixture
     def url_kwargs(self):
@@ -21,7 +22,9 @@ class TestActivateInvalid(ViewTest):
 
 class TestActivateValid(ViewTest):
     URL = "activate"
-    EXPECTED_STATUS = 302
+    EXPECTED_STATUS = 200
+    TEMPLATE = "dashboard.html"
+    MAX_QUERIES = 101
 
     @pytest.fixture(autouse=True)
     def user(self):

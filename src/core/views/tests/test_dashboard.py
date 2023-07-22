@@ -7,11 +7,13 @@ from test_utils.base_view_test import ViewTest
 class TestDashboardAnon(ViewTest):
     URL = "dashboard"
     TEMPLATE = "dashboard.html"
+    MAX_QUERIES = 7
 
 
 class TestDashboardAnon(ViewTest):
     URL = "dashboard"
     TEMPLATE = "dashboard.html"
+    MAX_QUERIES = 5
 
     @pytest.fixture
     def as_user(self):
