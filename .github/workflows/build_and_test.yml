@@ -29,6 +29,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - uses: Gr1N/setup-poetry@v8
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+    - name: Restore Poetry cache
+      run: poetry config virtualenvs.create false
     - name: Analyzing the code with pylint
       run: |
         poetry run pylint --load-plugins=pylint_django --django-settings-module=daily_groove.settings ./src
@@ -40,6 +51,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+    - uses: Gr1N/setup-poetry@v8
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+    - name: Restore Poetry cache
+      run: poetry config virtualenvs.create false
     - name: Run Unit Tests
       run: |
         poetry run pytest src
