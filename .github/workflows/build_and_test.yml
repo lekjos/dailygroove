@@ -64,4 +64,5 @@ jobs:
       run: poetry config virtualenvs.create false
     - name: Run Unit Tests
       run: |
-        poetry run pytest src
+        cd src
+        poetry run pytest
