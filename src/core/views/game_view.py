@@ -56,8 +56,8 @@ class GameView(FormMixin, DetailView):
         return (
             Player.objects.filter(game=self.game)
             .annotate_name()
-            .annotate_most_recent_submission(self.game)
-            .annotate_submission_count(self.game)
+            .annotate_most_recent_submission()
+            .annotate_submission_count()
             .order_by("player_name")
             .values(
                 "pk",

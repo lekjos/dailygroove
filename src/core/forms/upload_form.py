@@ -1,6 +1,5 @@
 from django import forms
 
-from core.models.game import Game
 from core.models.submission import Submission
 
 

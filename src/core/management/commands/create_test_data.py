@@ -58,7 +58,7 @@ class Command(BaseCommand):
         for i, submission in enumerate(submissions):
             if i <= 10:
                 continue
-            r = Round.objects.create(
+            Round.objects.create(
                 game=game,
                 submission=submission,
                 winner=random.choice(players),

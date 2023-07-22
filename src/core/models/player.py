@@ -27,7 +27,7 @@ class PlayerQuerySet(models.QuerySet):
             )
         ).defer("name")
 
-    def annotate_most_recent_submission(self, game: "Game"):
+    def annotate_most_recent_submission(self):
         from core.models.submission import Submission
 
         recent_sqry = Subquery(
@@ -37,7 +37,7 @@ class PlayerQuerySet(models.QuerySet):
         )
         return self.annotate(most_recent_submission=recent_sqry)
 
-    def annotate_submission_count(self, game: "Game"):
+    def annotate_submission_count(self):
         return self.annotate(
             submission_count=Count(
                 "user__submissions",
