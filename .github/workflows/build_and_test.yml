@@ -11,20 +11,17 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        cache: |
+          pip
+          pietry
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install poetry
         poetry install --with dev
-        - name: Delete static files
-        run: |
+    - name: Delete static files
+      run: |
         rm -rf src/static/
-    - uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cache/pypoetry/virtualenvs
-          ~/.cache/pip
-        key: ${{ hashFiles('pyproject.toml') }}-${{ hashFiles('poetry.lock') }}
     - name: Prepare environment artifacts
       uses: actions/upload-artifact@v3
       with:
