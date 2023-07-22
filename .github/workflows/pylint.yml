@@ -24,6 +24,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install --with dev
+    - name: Delete static files
+      run: |
+        rm -rf src/static/
     - name: Prepare environment artifacts
       uses: actions/upload-artifact@v2
       with:
