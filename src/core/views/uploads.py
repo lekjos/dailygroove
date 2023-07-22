@@ -28,9 +28,7 @@ class UploadsView(LoginRequiredMixin, FormMixin, ListView):
     @cached_property
     def uploads(self):
         print("here")
-        return Submission.objects.filter(user=self.request.user).prefetch_related(
-            "games"
-        )
+        return Submission.objects.filter(user=self.request.user).annotate_fresh()
 
     def get_form(self, form_class=None):
         return UploadFormAllGames(self.request.user, **self.get_form_kwargs())

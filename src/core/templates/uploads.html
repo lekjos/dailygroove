@@ -23,7 +23,7 @@
           <tr>
             <th>Title</th>
             <th>Url</th>
-            <th>Fresh Games</th>
+            <th>Fresh</th>
             <th>Uploaded</th>
             <th></th>
           </tr>
@@ -35,11 +35,7 @@
               <td>
                 <a href="{{ object.url }}">{{ object.url }}</a>
               </td>
-              <td>
-                {% for game in object.games.all %}
-                  {{ game.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
+              <td>{{ object.fresh }}</td>
               <td>{{ object.datetime }}</td>
               <td>
                 <i class="fa-solid fa-trash"></i>
