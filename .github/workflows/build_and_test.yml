@@ -21,7 +21,10 @@ jobs:
         poetry install --with dev
     - name: Delete static files
       run: |
-        rm -rf src/static/
+        echo $(pwd)
+        pwd
+        ls
+        rm -rf ./src/static/
     - name: Prepare environment artifacts
       uses: actions/upload-artifact@v3
       with:
