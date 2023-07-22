@@ -5,9 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -33,6 +30,13 @@ jobs:
     - name: Analyzing code with black
       run: |
         poetry run black . --check
-    - name: Run Unit Tests
-      run: |
-        poetry run pytest
+
+  test:
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Unit Tests
+        run: |
+          poetry run pytest src
