@@ -18,18 +18,16 @@ def activate_view(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
-    if user is not None and account_activation_token.check_token(user, token):
+    good_token = account_activation_token.check_token(user, token)
+
+    if user is not None and good_token:
         user.is_active = True
         user.email_confirmed = True
         user.save()
         login(request, user)
         return redirect("dashboard")
-    msg = f"invalid account activation detected: uidb64:{uidb64} token:{token}"
-    logger.exception(
-        msg,
-        user,
-        account_activation_token.check_token(user, token),
-    )
+    msg = f"invalid account activation detected: uidb64:{uidb64} token:{token}. user:{user}"
+    logger.exception(msg)
     return render(request, "account_activation_invalid.html")
 
 

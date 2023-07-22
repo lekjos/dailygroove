@@ -1,3 +1,7 @@
+import uuid
+import zoneinfo
+from datetime import time
+
 import factory
 from factory.django import DjangoModelFactory
 
@@ -15,26 +19,21 @@ class UserFactory(DjangoModelFactory):
 
     class Meta:
         model = User
-        django_get_or_create = ("username",)
+        django_get_or_create = ("email",)
 
 
 class GameFactory(DjangoModelFactory):
     name = factory.Faker("word")
-    owner = factory.RelatedFactory("core.models.factories.PlayerFactory")
+    owner = factory.RelatedFactory("core.models.factories.UserFactory")
     slug = factory.Faker("slug")
+    frequency = Game.Frequency.MANUAL
+    timezone = zoneinfo.ZoneInfo("America/Los_Angeles")
+    round_start_time = time(hour=10)
+    invite_token = uuid.uuid4()
 
     class Meta:
         model = Game
         django_get_or_create = ("slug",)
-
-    @factory.post_generation
-    def submissions(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for submission in extracted:
-                self.submissions.add(submission)  # pylint: disable=no-member
 
     @factory.post_generation
     def players(self, create, extracted, **kwargs):
@@ -64,20 +63,8 @@ class SubmissionFactory(DjangoModelFactory):
     class Meta:
         model = Submission
 
-    @factory.post_generation
-    def games(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for game in extracted:
-                self.games.add(game)  # pylint: disable=no-member
-
 
 class RoundFactory(DjangoModelFactory):
-    # winner = factory.SubFactory(PlayerFactory)
-    # submission = factory.SubFactory(SubmissionFactory)
-    # moderator = factory.SubFactory(PlayerFactory)
     game = factory.SubFactory(GameFactory)
     winner = factory.SubFactory(PlayerFactory)
     moderator = factory.SubFactory(PlayerFactory)
@@ -92,4 +79,5 @@ class RoundFactory(DjangoModelFactory):
 
         if extracted:
             for submission in extracted:
+                self.submissions.add(submission)  # pylint: disable=no-member
                 self.submissions.add(submission)  # pylint: disable=no-member

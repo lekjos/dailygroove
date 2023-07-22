@@ -6,8 +6,7 @@ from django.db import models
 from django.db.models import (
     BooleanField,
     Case,
-    F,
-    Func,
+    Count,
     OuterRef,
     Q,
     Subquery,
@@ -32,25 +31,22 @@ class PlayerQuerySet(models.QuerySet):
         from core.models.submission import Submission
 
         recent_sqry = Subquery(
-            Submission.objects.filter(user_id=OuterRef("user_id"), games=game)
+            Submission.objects.filter(user_id=OuterRef("user_id"))
             .order_by("datetime")
             .values("datetime")[:1]
         )
         return self.annotate(most_recent_submission=recent_sqry)
 
     def annotate_submission_count(self, game: "Game"):
-        from core.models.game_submission import GameSubmission
-
-        fresh_subquery = Subquery(
-            GameSubmission.objects.filter(
-                Q(game=game, submission__user=OuterRef("user"))
-                & (Q(round__isnull=True) | Q(round__winner__isnull=True))
+        return self.annotate(
+            submission_count=Count(
+                "user__submissions",
+                filter=(
+                    Q(user__submissions__rounds__isnull=True)
+                    | Q(user__submissions__rounds=None)
+                ),
             )
-            .annotate(count=Func(F("pk"), function="Count"))
-            .values("count")
         )
-
-        return self.annotate(submission_count=fresh_subquery)
 
     def annotate_has_user(self):
         return self.annotate(

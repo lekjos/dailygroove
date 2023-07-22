@@ -35,4 +35,4 @@ jobs:
         poetry run black . --check
     - name: Run Unit Tests
       run: |
-        poetry run src/manage.py test
+        poetry run pytest

@@ -7,7 +7,7 @@ from core.models.submission import Submission
 class UploadFormSelectGame(forms.ModelForm):
     class Meta:
         model = Submission
-        fields = ["url", "title", "games"]
+        fields = ["url", "title"]
 
 
 class UploadFormAllGames(forms.ModelForm):
@@ -26,7 +26,5 @@ class UploadFormAllGames(forms.ModelForm):
         self.instance.user = self.user
         if commit:
             self.instance.save()
-            self.instance.games.set(
-                Game.objects.filter(players=self.user).values_list("pk", flat=True)
-            )
+
         super().save(self)  # pylint: disable=redundant-keyword-arg

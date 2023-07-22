@@ -11,6 +11,7 @@ from core.forms.winner_form import WinnerForm
 from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
+from core.models.submission import Submission
 
 
 class GameView(FormMixin, DetailView):
@@ -44,10 +45,11 @@ class GameView(FormMixin, DetailView):
         try:
             return Round.objects.current_round(game=self.game)
         except NoEligibleSubmissionsError:
-            return {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Out of Player Submissions!",
-            }
+            submission = Submission(
+                url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                title="Out of Player Submissions!",
+            )
+            return Round(game=self.game, submission=submission)
 
     @cached_property
     def players(self):
