@@ -7,11 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
-        cache: 'poetry'
+        python-version: "3.10"
+    - uses: Gr1N/setup-poetry@v8
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+    - run: poetry --version
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -19,9 +23,6 @@ jobs:
         poetry install --with dev
     - name: Delete static files
       run: |
-        echo $(pwd)
-        pwd
-        ls
         rm -rf ./src/static/
 
   lint:
