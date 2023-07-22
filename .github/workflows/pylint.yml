@@ -28,7 +28,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: environment
-        path: ${{ env.PYTHON_LOCATION }}
+        path: .
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: environment
-        path: ${{ env.PYTHON_LOCATION }}  # This should match the path used in the setup job
+        path: .  # This should match the path used in the setup job
     - name: Analyzing the code with pylint
       run: |
         poetry run pylint --load-plugins=pylint_django --django-settings-module=daily_groove.settings ./src
@@ -54,7 +54,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: environment
-        path: ${{ env.PYTHON_LOCATION }}  # This should match the path 
+        path: .  # This should match the path 
     - name: Run Unit Tests
       run: |
         poetry run pytest src
