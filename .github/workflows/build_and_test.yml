@@ -25,13 +25,6 @@ jobs:
         pwd
         ls
         rm -rf ./src/static/
-    - name: Prepare environment artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: environment
-        path: |
-          .
-          ~/.cache/pypoetry/virtualenvs
 
   lint:
     runs-on: ubuntu-latest
@@ -54,17 +47,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
-    strategy:
-      matrix:
-        python-version: ["3.10"]
     steps:
-    - name: Download environment artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: environment
-        path: |
-          .
-          ~/.cache/pypoetry/virtualenvs
     - name: Run Unit Tests
       run: |
         poetry run pytest src
