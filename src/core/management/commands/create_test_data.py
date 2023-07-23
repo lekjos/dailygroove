@@ -42,7 +42,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if not settings.DEBUG:
+        if not settings.DEBUG and settings.ENV != "test":
             raise CommandError("This command may only be run in debug mode")
 
         if options["delete"]:
@@ -78,7 +78,6 @@ class Command(BaseCommand):
                     url=link,
                 )
             )
-
         round_num = 0
         for i, submission in enumerate(submissions):
             if i <= 10:
