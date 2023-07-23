@@ -38,7 +38,7 @@ class RoundQuerySet(models.QuerySet):
         def _get_date_range():
             match frequency:
                 case Game.Frequency.MANUAL:
-                    start_date = end_date = now + timedelta(days=10)
+                    return None, None
                 case Game.Frequency.DAILY:
                     start_date = now
                     end_date = now
@@ -64,11 +64,14 @@ class RoundQuerySet(models.QuerySet):
 
         game_id = game.pk if isinstance(game, Game) else game
         start_date, end_date = _get_date_range()
+        date_kwargs = {}
+        if start_date:
+            date_kwargs["datetime__gte"] = start_date
+        if end_date:
+            date_kwargs["datetime__lt"] = end_date
 
         most_recent_round = Round.objects.filter(
-            game_id=game_id,
-            datetime__gte=start_date,
-            datetime__lt=end_date,
+            game_id=game_id, **date_kwargs
         ).order_by("-round_number")
 
         if not most_recent_round:
@@ -76,7 +79,7 @@ class RoundQuerySet(models.QuerySet):
         else:
             most_recent_round = most_recent_round.first()
 
-        if now < end_date:
+        if end_date and now < end_date:
             most_recent_round.next_round_at = end_date
         else:
             most_recent_round.round_ends_at = end_date

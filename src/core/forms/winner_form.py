@@ -13,22 +13,47 @@ class WinnerForm(BaseCrispyForm, forms.ModelForm):
         model = Round
         fields = ["winner"]
 
-    def __init__(self, *args, players=None, moderator_id: int = None, **kwargs):
-        self.players = players
+    def __init__(
+        self,
+        *args,
+        players=None,
+        enable_reroll=True,
+        moderator_id: int = None,
+        **kwargs
+    ):
         self.moderator_id = moderator_id
         super().__init__(*args, **kwargs)
 
-        self.helper.add_input(
-            Submit(
-                name="action",
-                value="Reveal Submitter",
+        if self.instance.winner:
+            self.helper.inputs.clear()
+            self.helper.add_input(
+                Submit(
+                    name="action",
+                    value="Start Next Round",
+                )
             )
-        )
+            del self.fields["winner"]
+        else:
+            self.players = players
 
-        player_choices = [{"pk": None, "player_name": "-----"}] + list(players)
-        self.fields["winner"].choices = (
-            (x["pk"], x["player_name"]) for x in player_choices
-        )
+            player_choices = [{"pk": None, "player_name": "-----"}] + list(players)
+            self.fields["winner"].choices = (
+                (x["pk"], x["player_name"]) for x in player_choices
+            )
+
+            self.helper.add_input(
+                Submit(
+                    name="action",
+                    value="Reveal Submitter",
+                )
+            )
+            if enable_reroll:
+                self.helper.add_input(
+                    Submit(
+                        name="action",
+                        value="Shuffle",
+                    )
+                )
 
     def save(self, commit=True):
         self.instance.moderator_id = self.moderator_id
