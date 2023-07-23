@@ -12,5 +12,5 @@ coverage:
       default:
         # Exclude files with "WSGI" in their names from the report
         exclude:
-          - "*asgi.py"
-          - "*wsgi.py"
+          - "src/daily_groove/asgi.py"
+          - src/daily_groove/wsgi.py"
