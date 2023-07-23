@@ -1,3 +1,7 @@
+[![codecov](https://codecov.io/gh/lekjos/dailygroove/branch/master/graph/badge.svg?token=FHOY70B2II)](https://codecov.io/gh/lekjos/dailygroove)
+
+[![Build & Test](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml)
+
 # Daily Groove
 A guessing game where players guess who submitted the randomly selected content. Inspired by http://app.groovebox.link.
 

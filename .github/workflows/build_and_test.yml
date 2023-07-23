@@ -65,11 +65,12 @@ jobs:
     - name: Run Unit Tests
       run: |
         cd src
-        poetry run coverage run -m pytest --junitxml=pytest.report.xml --create-db
+        poetry run pytest --cov=./ --cov-report=xml --create-db
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: /home/runner/work/dailygroove/dailygroove/src/pytest.report.xml
+        files: .coverage,coverage.xml
+
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
