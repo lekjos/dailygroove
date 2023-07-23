@@ -1,13 +1,12 @@
 [![codecov](https://codecov.io/gh/lekjos/dailygroove/branch/master/graph/badge.svg?token=FHOY70B2II)](https://codecov.io/gh/lekjos/dailygroove)
-
 [![Build & Test](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml)
 
 # Daily Groove
-A guessing game where players guess who submitted the randomly selected content. Inspired by http://app.groovebox.link.
+A guessing game where players guess who submitted the randomly selected content. Inspired by http://app.groovebox.link. The site is live at https://www.dailygroove.us in beta
 
 # Local Development
 
-- Install python 3.11 (or set pyenv to it)
+- Install python 3.10 (or set pyenv to it)
 - install Poetry & pre-commit: `pip install poetry pre-commmit`
 - Clone the repo and cd to root directory
 - activate venv: `poetry shell`
@@ -26,9 +25,9 @@ A guessing game where players guess who submitted the randomly selected content.
    - [x] Link with fk `Submission` to `Round`
    - [x] Reveal Submission view
    - [x] Record Winner view
-- [ ] Add re-roll button
+- [x] Add re-roll button
 - [ ] add smarts to `Submission` model
-   - [ ] Add support for embedded videos from popular platforms (youtube)
+   - [x] Add support for embedded videos from popular platforms (youtube)
    - [ ] Spotify
    - [ ] Non-video/word-of-the-day
 - [x] Authed User Player Flow
