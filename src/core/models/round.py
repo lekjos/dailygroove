@@ -42,7 +42,7 @@ class RoundQuerySet(models.QuerySet):
         def _get_date_range():
             match frequency:
                 case Game.Frequency.MANUAL:
-                    pass
+                    start_date = end_date = now + timedelta(days=10)
                 case Game.Frequency.DAILY:
                     start_date = now
                     end_date = now
@@ -119,16 +119,10 @@ class Round(models.Model):
         unique_together = ("round_number", "game")
 
     def save(self, *args, **kwargs):
-        from ..models.game_submission import GameSubmission
-
         self._set_default_round_number()
         self._set_default_submission()
 
         super().save()
-        GameSubmission.objects.filter(
-            submission_id=self.submission.pk,  # pylint: disable=no-member
-            game_id=self.game.pk,  # pylint: disable=no-member
-        ).update(round_id=self.pk)
 
     def _set_default_round_number(self):
         if not self.round_number:
@@ -148,9 +142,9 @@ class Round(models.Model):
             self.submission
         except Submission.DoesNotExist as e:
             cols = ("pk", "user_id")
-            all_eligible = Submission.objects.filter(
-                games=self.game, gamesubmission__round__isnull=True
-            ).values_list(*cols)
+            all_eligible = Submission.objects.filter(rounds__isnull=True).values_list(
+                *cols
+            )
 
             if all_eligible:
                 df = pd.DataFrame(all_eligible)

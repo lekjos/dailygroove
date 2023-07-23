@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block page_content %}
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block page_content %}
   <div class="container-fluid">
     <div class="jumbotron">
       <h1 class="display-4">My Uploads</h1>
@@ -9,10 +11,7 @@
         <div class="card-body">
           <h5 class="card-title">Upload</h5>
           <p class="card-text">Submit your groove</p>
-          <form class="form" method="post">
-            {% csrf_token %} {{ form.as_p }}
-            <button class="btn btn-primary btn-block" type="submit">Submit Groove</button>
-          </form>
+          {% crispy form %}
         </div>
       </div>
     </div>
@@ -23,7 +22,7 @@
           <tr>
             <th>Title</th>
             <th>Url</th>
-            <th>Fresh Games</th>
+            <th>Fresh</th>
             <th>Uploaded</th>
             <th></th>
           </tr>
@@ -35,11 +34,7 @@
               <td>
                 <a href="{{ object.url }}">{{ object.url }}</a>
               </td>
-              <td>
-                {% for game in object.games.all %}
-                  {{ game.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
+              <td>{{ object.fresh }}</td>
               <td>{{ object.datetime }}</td>
               <td>
                 <i class="fa-solid fa-trash"></i>

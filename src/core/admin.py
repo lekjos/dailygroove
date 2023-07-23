@@ -7,7 +7,6 @@ from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from core.models import Game, Player, Round, Submission
-from core.models.game_submission import GameSubmission
 from core.models.user import User
 
 
@@ -68,12 +67,6 @@ class GameAdmin(admin.ModelAdmin):
         )
 
 
-@admin.register(GameSubmission)
-class GameSubmissionAdmin(admin.ModelAdmin):
-    list_display = ("game", "submission", "round")
-    list_filter = ("game",)
-
-
 @admin.register(Round)
 class RoundAdmin(admin.ModelAdmin):
     list_display = (
@@ -94,4 +87,4 @@ class SubmissionAdmin(admin.ModelAdmin):
         "title",
         "url",
     )
-    search_fields = ("url", "user", "games__name")
+    search_fields = ("url", "user")

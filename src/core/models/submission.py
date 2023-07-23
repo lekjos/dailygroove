@@ -1,16 +1,15 @@
+# pylint: disable=cyclic-import
+
 from django.conf import settings
 from django.db import models
+from django.db.models import Exists, OuterRef
 
 
 class SubmissionQuerySet(models.QuerySet):
-    def add_submissions_to_game(self, game):
-        from ..models.game_submission import GameSubmission
+    def annotate_fresh(self):
+        from core.models.round import Round
 
-        submission_pks = self.values_list("pk", flat=True)
-        gs_items = (
-            GameSubmission(submission_id=x, game_id=game.pk) for x in submission_pks
-        )
-        GameSubmission.objects.bulk_create(gs_items, ignore_conflicts=True)
+        return self.annotate(fresh=~Exists(Round.objects.filter(pk=OuterRef("pk"))))
 
 
 class Submission(models.Model):
@@ -27,9 +26,8 @@ class Submission(models.Model):
         settings.AUTH_USER_MODEL, related_name="submissions", on_delete=models.CASCADE
     )
     datetime = models.DateTimeField(auto_now_add=True)
-    games = models.ManyToManyField(
-        "core.game", related_name="submissions", through="core.GameSubmission"
-    )
+
+    objects: SubmissionQuerySet = SubmissionQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.user.username} - {self.title}"

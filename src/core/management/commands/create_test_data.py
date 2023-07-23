@@ -10,7 +10,6 @@ import factory
 from core.models import Round, User
 from core.models.factories import GameFactory, PlayerFactory, SubmissionFactory
 from core.models.game import Game
-from core.models.game_submission import GameSubmission
 from core.models.player import Player
 from core.models.submission import Submission
 
@@ -31,7 +30,7 @@ class Command(BaseCommand):
             raise CommandError("This command may only be run in debug mode")
 
         if options["delete"]:
-            for model in [Game, Submission, Round, User, Player, GameSubmission]:
+            for model in [Game, Submission, Round, User, Player]:
                 model.objects.all().delete()
 
         user = User.objects.create_superuser(
@@ -52,7 +51,6 @@ class Command(BaseCommand):
 
         submissions = SubmissionFactory.create_batch(
             15,
-            games=[game],
             user=factory.Iterator([random.choice(users) for _ in range(15)]),
         )
 
@@ -60,13 +58,10 @@ class Command(BaseCommand):
         for i, submission in enumerate(submissions):
             if i <= 10:
                 continue
-            r = Round.objects.create(
+            Round.objects.create(
                 game=game,
                 submission=submission,
                 winner=random.choice(players),
-            )
-            GameSubmission.objects.filter(game=game, submission=submission).update(
-                round=r
             )
             round_num += 1
 

@@ -1,5 +1,6 @@
 from functools import cached_property
 
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -11,6 +12,7 @@ from core.forms.winner_form import WinnerForm
 from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
+from core.models.submission import Submission
 
 
 class GameView(FormMixin, DetailView):
@@ -44,18 +46,19 @@ class GameView(FormMixin, DetailView):
         try:
             return Round.objects.current_round(game=self.game)
         except NoEligibleSubmissionsError:
-            return {
-                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "title": "Out of Player Submissions!",
-            }
+            submission = Submission(
+                url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                title="Out of Player Submissions!",
+            )
+            return Round(game=self.game, submission=submission)
 
     @cached_property
     def players(self):
         return (
             Player.objects.filter(game=self.game)
             .annotate_name()
-            .annotate_most_recent_submission(self.game)
-            .annotate_submission_count(self.game)
+            .annotate_most_recent_submission()
+            .annotate_submission_count()
             .order_by("player_name")
             .values(
                 "pk",
@@ -85,8 +88,9 @@ class GameView(FormMixin, DetailView):
             .values("player_name", "win_count", "most_recent_win")
         )
 
-    def get_moderator(self):
-        is_moderator = [
+    @cached_property
+    def moderator(self):
+        moderators = [
             x
             for x in self.players
             if x["user__id"] == self.request.user.pk
@@ -97,10 +101,10 @@ class GameView(FormMixin, DetailView):
             )
         ]
 
-        return is_moderator[0] if is_moderator else None
+        return moderators[0] if moderators else None
 
     def get_form(self, form_class=None):
-        moderator = self.get_moderator()
+        moderator = self.moderator
         if moderator:
             moderator = moderator["pk"]
 
@@ -127,7 +131,7 @@ class GameView(FormMixin, DetailView):
         context["rounds"] = self.rounds
         context["current_round"] = self.current_round
         context["players"] = self.players
-        context["moderator"] = self.get_moderator()
+        context["moderator"] = self.moderator
         return context
 
     def form_invalid(self, form):
@@ -140,12 +144,14 @@ class GameView(FormMixin, DetailView):
         Handle POST requests: instantiate a form instance with the passed
         POST variables and then check if it's valid.
         """
+        if not self.moderator:
+            raise PermissionDenied("Only moderators and owners can POST.")
         form = self.get_form()
         action = request.POST.get("action")
-        if form.is_valid() and action == "declare_winner":
+        if form.is_valid() and action == "Declare Winner":
             form.save()
             return self.form_valid(form)
-        if form.is_valid() and action == "reveal":
+        if form.is_valid() and action == "Reveal Submitter":
             return self.render_to_response(
                 self.get_context_data(
                     form=form,

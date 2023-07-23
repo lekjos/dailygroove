@@ -1,9 +1,14 @@
 from django import forms
 
+from crispy_forms.layout import Submit
+
+from core.forms.base_crispy_form import BaseCrispyForm
 from core.models.round import Round
 
 
-class WinnerForm(forms.ModelForm):
+class WinnerForm(BaseCrispyForm, forms.ModelForm):
+    SUBMIT_BUTTON_VALUE = "Declare Winner"
+
     class Meta:
         model = Round
         fields = ["winner"]
@@ -12,6 +17,13 @@ class WinnerForm(forms.ModelForm):
         self.players = players
         self.moderator_id = moderator_id
         super().__init__(*args, **kwargs)
+
+        self.helper.add_input(
+            Submit(
+                name="action",
+                value="Reveal Submitter",
+            )
+        )
 
         player_choices = [{"pk": None, "player_name": "-----"}] + list(players)
         self.fields["winner"].choices = (

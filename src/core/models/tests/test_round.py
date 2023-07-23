@@ -21,7 +21,7 @@ class TestRound:
 
     @pytest.fixture
     def submissions(self, game):
-        return SubmissionFactory.create_batch(5, games=[game])
+        return SubmissionFactory.create_batch(5)
 
     @pytest.mark.django_db
     def test_save_iterates_round_number(

@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING
-
+# pylint: disable=cyclic-import
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import (
     BooleanField,
     Case,
-    F,
-    Func,
+    Count,
     OuterRef,
     Q,
     Subquery,
@@ -15,9 +13,6 @@ from django.db.models import (
     When,
 )
 from django.db.models.functions import Coalesce
-
-if TYPE_CHECKING:
-    from .game import Game
 
 
 class PlayerQuerySet(models.QuerySet):
@@ -28,29 +23,26 @@ class PlayerQuerySet(models.QuerySet):
             )
         ).defer("name")
 
-    def annotate_most_recent_submission(self, game: "Game"):
+    def annotate_most_recent_submission(self):
         from core.models.submission import Submission
 
         recent_sqry = Subquery(
-            Submission.objects.filter(user_id=OuterRef("user_id"), games=game)
+            Submission.objects.filter(user_id=OuterRef("user_id"))
             .order_by("datetime")
             .values("datetime")[:1]
         )
         return self.annotate(most_recent_submission=recent_sqry)
 
-    def annotate_submission_count(self, game: "Game"):
-        from core.models.game_submission import GameSubmission
-
-        fresh_subquery = Subquery(
-            GameSubmission.objects.filter(
-                Q(game=game, submission__user=OuterRef("user"))
-                & (Q(round__isnull=True) | Q(round__winner__isnull=True))
+    def annotate_submission_count(self):
+        return self.annotate(
+            submission_count=Count(
+                "user__submissions",
+                filter=(
+                    Q(user__submissions__rounds__isnull=True)
+                    | Q(user__submissions__rounds=None)
+                ),
             )
-            .annotate(count=Func(F("pk"), function="Count"))
-            .values("count")
         )
-
-        return self.annotate(submission_count=fresh_subquery)
 
     def annotate_has_user(self):
         return self.annotate(
