@@ -5,10 +5,6 @@ from django.db import models
 from django.db.models import F
 from django.db.models.functions import Coalesce
 
-import pandas as pd
-
-from core.exceptions import NoEligibleSubmissionsError
-
 if TYPE_CHECKING:
     from core.models.game import Game
 
@@ -118,6 +114,10 @@ class Round(models.Model):
     class Meta:
         unique_together = ("round_number", "game")
 
+    def shuffle(self):
+        self.submission_id = Submission.objects.get_fresh_groove_pk()
+        self.save()
+
     def save(self, *args, **kwargs):
         self._set_default_round_number()
         self._set_default_submission()
@@ -140,24 +140,8 @@ class Round(models.Model):
 
         try:
             self.submission
-        except Submission.DoesNotExist as e:
-            cols = ("pk", "user_id")
-            all_eligible = Submission.objects.filter(rounds__isnull=True).values_list(
-                *cols
-            )
-
-            if all_eligible:
-                df = pd.DataFrame(all_eligible)
-                df = df.rename(columns=dict(enumerate(cols)))
-
-                random_submissions = (
-                    df.groupby("user_id")["pk"]
-                    .apply(lambda x: x.sample(n=1))
-                    .reset_index(drop=True)
-                )
-                self.submission_id = random_submissions.sample(n=1).values[0]
-            else:
-                raise NoEligibleSubmissionsError() from e
+        except Submission.DoesNotExist:
+            self.submission_id = Submission.objects.get_fresh_groove_pk()
 
     def __str__(self):
         return f"{self.game} - round {self.round_number}"
