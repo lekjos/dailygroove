@@ -1,0 +1,16 @@
+
+# Global configuration (applies to all files)
+codecov:
+  coverage:
+    precision: 2
+    round: down
+
+# Customizing file-level coverage exclusions
+coverage:
+  status:
+    patch:
+      default:
+        # Exclude files with "WSGI" in their names from the report
+        exclude:
+          - "*asgi.py"
+          - "*wsgi.py"
