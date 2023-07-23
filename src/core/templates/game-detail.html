@@ -14,16 +14,16 @@
         <div class="card mt-4">
           <div class="card-header">Current Round</div>
           <div class="card-body">
+            {% if current_round.submission.title %}<p class="lead">{{current_round.submission.title}}</p>{% endif %}
             {{ current_round.submission.url|youtube_embed_url:current_round.submission.title|safe }}
-            {% if not current_round.winner %}
-              {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
-                {% if moderator %}
-                    {% if submitted_by %}<p>Submitted by: {{submitted_by}}</p>{% endif %}
-                    {% crispy form %}
-                {% endif %}
-            {% elif current_round.next_round_at and current_round.winner %}
+            {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
+            {% if moderator %}
+                {% if submitted_by %}<p>Submitted by: {{submitted_by}}</p>{% endif %}
+                {% if form %}{% crispy form %}{% endif %}
+            {% endif %}
+            {% if current_round.winner %}
               <p>Winner: {{current_round.winner}}</p>
-              <p>Next round begins at: {{ current_round.next_round_at|date }}
+              {% if current_round.next_round_at %}<p>Next round begins at: {{ current_round.next_round_at|date }}{% endif %}
             {% endif %}
           </div>
         </div>

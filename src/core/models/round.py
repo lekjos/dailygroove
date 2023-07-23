@@ -5,10 +5,6 @@ from django.db import models
 from django.db.models import F
 from django.db.models.functions import Coalesce
 
-import pandas as pd
-
-from core.exceptions import NoEligibleSubmissionsError
-
 if TYPE_CHECKING:
     from core.models.game import Game
 
@@ -42,7 +38,7 @@ class RoundQuerySet(models.QuerySet):
         def _get_date_range():
             match frequency:
                 case Game.Frequency.MANUAL:
-                    start_date = end_date = now + timedelta(days=10)
+                    return None, None
                 case Game.Frequency.DAILY:
                     start_date = now
                     end_date = now
@@ -68,11 +64,14 @@ class RoundQuerySet(models.QuerySet):
 
         game_id = game.pk if isinstance(game, Game) else game
         start_date, end_date = _get_date_range()
+        date_kwargs = {}
+        if start_date:
+            date_kwargs["datetime__gte"] = start_date
+        if end_date:
+            date_kwargs["datetime__lt"] = end_date
 
         most_recent_round = Round.objects.filter(
-            game_id=game_id,
-            datetime__gte=start_date,
-            datetime__lt=end_date,
+            game_id=game_id, **date_kwargs
         ).order_by("-round_number")
 
         if not most_recent_round:
@@ -80,7 +79,7 @@ class RoundQuerySet(models.QuerySet):
         else:
             most_recent_round = most_recent_round.first()
 
-        if now < end_date:
+        if end_date and now < end_date:
             most_recent_round.next_round_at = end_date
         else:
             most_recent_round.round_ends_at = end_date
@@ -118,6 +117,12 @@ class Round(models.Model):
     class Meta:
         unique_together = ("round_number", "game")
 
+    def shuffle(self):
+        from core.models.submission import Submission
+
+        self.submission_id = Submission.objects.get_fresh_groove_pk()
+        self.save()
+
     def save(self, *args, **kwargs):
         self._set_default_round_number()
         self._set_default_submission()
@@ -140,24 +145,8 @@ class Round(models.Model):
 
         try:
             self.submission
-        except Submission.DoesNotExist as e:
-            cols = ("pk", "user_id")
-            all_eligible = Submission.objects.filter(rounds__isnull=True).values_list(
-                *cols
-            )
-
-            if all_eligible:
-                df = pd.DataFrame(all_eligible)
-                df = df.rename(columns=dict(enumerate(cols)))
-
-                random_submissions = (
-                    df.groupby("user_id")["pk"]
-                    .apply(lambda x: x.sample(n=1))
-                    .reset_index(drop=True)
-                )
-                self.submission_id = random_submissions.sample(n=1).values[0]
-            else:
-                raise NoEligibleSubmissionsError() from e
+        except Submission.DoesNotExist:
+            self.submission_id = Submission.objects.get_fresh_groove_pk()
 
     def __str__(self):
         return f"{self.game} - round {self.round_number}"

@@ -1,0 +1,15 @@
+
+# Global configuration (applies to all files)
+codecov:
+  coverage:
+    precision: 2
+    round: down
+
+# Customizing file-level coverage exclusions
+coverage:
+  status:
+    patch:
+      default:
+        exclude:
+          - "src/daily_groove/asgi.py"
+          - "src/daily_groove/wsgi.py"

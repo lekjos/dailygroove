@@ -1,3 +1,4 @@
+# pylint: disable=too-many-locals
 import random
 from datetime import timedelta
 
@@ -13,6 +14,21 @@ from core.models.game import Game
 from core.models.player import Player
 from core.models.submission import Submission
 
+YOUTUBE_LINKS = [
+    (None, "https://www.youtube.com/watch?v=9bZkp7q19f0"),
+    ("My heart will go on", "https://www.youtube.com/watch?v=Qf4zY6diTwQ"),
+    ("Thriller", "http://youtu.be/sOnqjkJTMaA"),
+    ("Born in the USA", "https://www.youtube.com/watch?v=EPhWR4d3FJQ"),
+    (None, "https://www.youtube.com/watch?v=vx-Lzo9NxAQ"),
+    (None, "https://www.youtube.com/watch?v=QkiAwT3b2FI"),
+    (None, "https://m.youtube.com/watch?v=yV2zyKYWcTQ?t=60"),
+    ("JT Mirrors", "https://youtu.be/uuZE_IRwLNI"),
+    (
+        "daylight",
+        "https://open.spotify.com/track/1odExI7RdWc4BT515LTAwj?si=e3936aab8c5748c1",
+    ),
+]
+
 
 class Command(BaseCommand):
     help = "Creates a game and submissions for local development & testing"
@@ -26,7 +42,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if not settings.DEBUG:
+        if not settings.DEBUG and settings.ENV != "test":
             raise CommandError("This command may only be run in debug mode")
 
         if options["delete"]:
@@ -38,6 +54,7 @@ class Command(BaseCommand):
             email="admin@admin.admin",
             password="test",
         )
+
         game = GameFactory(
             name="Test Game",
             slug="test-game",
@@ -49,11 +66,18 @@ class Command(BaseCommand):
 
         users = User.objects.filter(player__in=list(players) + [admin_player])
 
-        submissions = SubmissionFactory.create_batch(
-            15,
-            user=factory.Iterator([random.choice(users) for _ in range(15)]),
-        )
-
+        submissions = []
+        submissions_len = len(YOUTUBE_LINKS)
+        for title, link in YOUTUBE_LINKS:
+            submissions.append(
+                SubmissionFactory(
+                    user=factory.Iterator(
+                        [random.choice(users) for _ in range(submissions_len)]
+                    ),
+                    title=title,
+                    url=link,
+                )
+            )
         round_num = 0
         for i, submission in enumerate(submissions):
             if i <= 10:

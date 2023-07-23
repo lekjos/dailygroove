@@ -4,12 +4,38 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Exists, OuterRef
 
+import pandas as pd
+
+from core.exceptions import NoEligibleSubmissionsError
+
 
 class SubmissionQuerySet(models.QuerySet):
     def annotate_fresh(self):
         from core.models.round import Round
 
         return self.annotate(fresh=~Exists(Round.objects.filter(pk=OuterRef("pk"))))
+
+    def get_fresh_groove_pk(self):
+        """
+        Returns the pk of a fresh groove for the selected game.
+
+        Raises NoEligibleSubmissionsError if there are no submissions left
+
+        """
+        cols = ("pk", "user_id")
+        all_eligible = Submission.objects.filter(rounds__isnull=True).values_list(*cols)
+
+        if all_eligible:
+            df = pd.DataFrame(all_eligible)
+            df = df.rename(columns=dict(enumerate(cols)))
+
+            random_submissions = (
+                df.groupby("user_id")["pk"]
+                .apply(lambda x: x.sample(n=1))
+                .reset_index(drop=True)
+            )
+            return random_submissions.sample(n=1).values[0]
+        raise NoEligibleSubmissionsError()
 
 
 class Submission(models.Model):

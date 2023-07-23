@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django import template
 
 from core.middleware.invite_token_middleware import replace_url_params
@@ -31,14 +33,23 @@ def param_replace(context, **kwargs):
 
 def get_youtube_embed(url):
     # Check if the link is from youtube.com or youtu.be
-    if "youtube.com/watch?v=" in url:
-        video_id = url.split("youtube.com/watch?v=")[1][:11]
-    elif "youtu.be/" in url:
-        video_id = url.split("youtu.be/")[1][:11]
-    else:
+    YT_DOMAINS = ["youtube.com", "youtu.be"]
+    is_youtube = any(x in url for x in YT_DOMAINS)
+    if not is_youtube:
         return False
 
+    parsed_url = urllib.parse.urlparse(url)
+    query_params = urllib.parse.parse_qs(parsed_url.query)
+
+    if "youtube.com/watch" in url and "v=" in url:
+        video_id = query_params.get("v")
+    elif "youtu.be/" in url:
+        video_id = url.split("youtu.be/")[1][:11]
+
     embed_link = f"https://www.youtube.com/embed/{video_id}"
+    if timestamp := query_params.get("t", ""):
+        embed_link += f"&t={timestamp}"
+
     return embed_link
 
 
@@ -51,7 +62,7 @@ def youtube_embed_url(url, title=""):
         res = f'<iframe width="560" height="315" src="{embed_url}" title="{title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'
         return res
 
-    return f"<a target='_blank' href='{url}'>{title if title else url}</a>"
+    return f"<a target='_blank' href='{url}'>{url}</a>"
 
 
 youtube_embed_url.is_safe = True

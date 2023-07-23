@@ -1,8 +1,9 @@
 from functools import cached_property
 
-from django.core.exceptions import PermissionDenied
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.db.models import Count, F, OuterRef, Q, Subquery
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin
@@ -148,16 +149,29 @@ class GameView(FormMixin, DetailView):
             raise PermissionDenied("Only moderators and owners can POST.")
         form = self.get_form()
         action = request.POST.get("action")
-        if form.is_valid() and action == "Declare Winner":
-            form.save()
-            return self.form_valid(form)
-        if form.is_valid() and action == "Reveal Submitter":
-            return self.render_to_response(
-                self.get_context_data(
-                    form=form,
-                    submitted_by=self.current_round.submission.user.get_display_name(),
+        if form.is_valid():
+            if action == "Declare Winner":
+                form.save()
+                return self.form_valid(form)
+            if action == "Reveal Submitter":
+                return self.render_to_response(
+                    self.get_context_data(
+                        form=form,
+                        submitted_by=self.current_round.submission.user.get_display_name(),
+                    )
                 )
-            )
+            if action == "Shuffle":
+                try:
+                    self.current_round.shuffle()
+                except NoEligibleSubmissionsError:
+                    messages.error(self.request, "There are no more submissions!")
+                return self.render_to_response(self.get_context_data(form=form))
+            if action == "Start Next Round":
+                Round.objects.create(game=self.game)
+                redirect("game_detail", slug=self.game.slug)
+
+            raise SuspiciousOperation()
+
         return self.form_invalid(form)
 
     def put(self, *args, **kwargs):
