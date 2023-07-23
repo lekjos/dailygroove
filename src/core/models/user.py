@@ -82,5 +82,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     def delete(self, *args, **kwargs):
         from ..models.player import Player
 
-        Player.objects.filter(user=self).update(name=self.username)
+        Player.objects.filter(user=self, name__isnull=True).update(name=self.username)
         super().delete(*args, **kwargs)

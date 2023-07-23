@@ -73,6 +73,10 @@ class Player(models.Model):
         if self.user is None and self.name is None:
             raise ValidationError("both user and name cannot be null")
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save()
+
     def __str__(self):
         if self.name:
             return self.name
