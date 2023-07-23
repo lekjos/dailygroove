@@ -1,7 +1,5 @@
 import random
 
-from django.test import Client
-
 import factory
 import pytest
 
