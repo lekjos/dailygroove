@@ -1,3 +1,4 @@
+# pylint: disable=too-many-locals
 import random
 from datetime import timedelta
 

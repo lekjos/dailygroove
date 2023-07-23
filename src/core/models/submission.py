@@ -35,8 +35,7 @@ class SubmissionQuerySet(models.QuerySet):
                 .reset_index(drop=True)
             )
             return random_submissions.sample(n=1).values[0]
-        else:
-            raise NoEligibleSubmissionsError()
+        raise NoEligibleSubmissionsError()
 
 
 class Submission(models.Model):

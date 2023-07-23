@@ -41,7 +41,7 @@ def get_youtube_embed(url):
     parsed_url = urllib.parse.urlparse(url)
     query_params = urllib.parse.parse_qs(parsed_url.query)
 
-    if "youtube.com/watch" and "v=" in url:
+    if "youtube.com/watch" in url and "v=" in url:
         video_id = query_params.get("v")
     elif "youtu.be/" in url:
         video_id = url.split("youtu.be/")[1][:11]

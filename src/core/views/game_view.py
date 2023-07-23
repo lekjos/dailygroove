@@ -1,7 +1,7 @@
 from functools import cached_property
 
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -153,22 +153,24 @@ class GameView(FormMixin, DetailView):
             if action == "Declare Winner":
                 form.save()
                 return self.form_valid(form)
-            elif action == "Reveal Submitter":
+            if action == "Reveal Submitter":
                 return self.render_to_response(
                     self.get_context_data(
                         form=form,
                         submitted_by=self.current_round.submission.user.get_display_name(),
                     )
                 )
-            elif action == "Shuffle":
+            if action == "Shuffle":
                 try:
                     self.current_round.shuffle()
                 except NoEligibleSubmissionsError:
                     messages.error(self.request, "There are no more submissions!")
                 return self.render_to_response(self.get_context_data(form=form))
-            elif action == "Start Next Round":
+            if action == "Start Next Round":
                 Round.objects.create(game=self.game)
                 redirect("game_detail", slug=self.game.slug)
+
+            raise SuspiciousOperation()
 
         return self.form_invalid(form)
 

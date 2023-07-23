@@ -118,6 +118,8 @@ class Round(models.Model):
         unique_together = ("round_number", "game")
 
     def shuffle(self):
+        from core.models.submission import Submission
+
         self.submission_id = Submission.objects.get_fresh_groove_pk()
         self.save()
 
