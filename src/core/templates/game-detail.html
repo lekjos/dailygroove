@@ -16,6 +16,7 @@
           <div class="card-body">
             {% if current_round.submission.title %}<p class="lead">{{current_round.submission.title}}</p>{% endif %}
             {{ current_round.submission.url|youtube_embed_url:current_round.submission.title|safe }}
+            {% if current_round.submission.url %}<a target="_blank" href="{{current_round.submission.url}}">{{current_round.submission.url}}</a>{% endif %}
             {% if current_round.round_ends_at %}<p>Round Ends at: {{current_round.round_ends_at|date }}</p>{% endif %}
             {% if moderator %}
                 {% if submitted_by %}<p>Submitted by: {{submitted_by}}</p>{% endif %}
