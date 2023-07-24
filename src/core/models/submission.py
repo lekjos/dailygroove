@@ -23,7 +23,7 @@ class SubmissionQuerySet(models.QuerySet):
 
         """
         cols = ("pk", "user_id")
-        all_eligible = Submission.objects.filter(rounds__isnull=True).values_list(*cols)
+        all_eligible = Submission.objects.filter(round__isnull=True).values_list(*cols)
 
         if all_eligible:
             df = pd.DataFrame(all_eligible)
