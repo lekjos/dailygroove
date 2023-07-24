@@ -95,9 +95,9 @@ class Round(models.Model):
         null=True,
         blank=True,
     )
-    submission = models.ForeignKey(
+    submission = models.OneToOneField(
         "core.submission",
-        related_name="rounds",
+        related_name="round",
         on_delete=models.CASCADE,
     )
     moderator = models.ForeignKey(

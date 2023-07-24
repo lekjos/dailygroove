@@ -31,7 +31,7 @@ class TestRound:
         player,
         game,
     ):
-        round = Round(game=game, submission=submissions[2], winner=player)
+        round = Round(game=game, submission=submissions[3], winner=player)
         round.save()
         assert round.round_number == 2
 
