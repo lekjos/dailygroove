@@ -20,8 +20,8 @@ YOUTUBE_LINKS = [
     ("Thriller", "http://youtu.be/sOnqjkJTMaA"),
     ("Born in the USA", "https://www.youtube.com/watch?v=EPhWR4d3FJQ"),
     (None, "https://www.youtube.com/watch?v=vx-Lzo9NxAQ"),
-    (None, "https://www.youtube.com/watch?v=QkiAwT3b2FI"),
-    (None, "https://m.youtube.com/watch?v=yV2zyKYWcTQ?t=60"),
+    (None, "https://m.youtube.com/watch?v=QkiAwT3b2FI"),
+    (None, "https://youtu.be/yV2zyKYWcTQ?t=39"),
     ("JT Mirrors", "https://youtu.be/uuZE_IRwLNI"),
     (
         "daylight",
