@@ -8,16 +8,30 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import Game, Player, Round, Submission
 from core.models.user import User
+from core.utils import IsNullFilter
 
 
 class PlayerInline(admin.TabularInline):
     model = Player
 
 
+class PlayerIsNullFilter(IsNullFilter):
+    title = "Has Bound Player(s)"
+    parameter_name = "has_player"
+    field_lookup = "player"
+
+
 @admin.register(User)
 class UserAdminCustom(UserAdmin):
-    list_display = ("username", "email", "is_staff")
+    list_display = (
+        "username",
+        "email",
+        "email_confirmed",
+        "is_staff",
+    )
     search_fields = ("username", "email")
+    list_filter = (PlayerIsNullFilter, "email_confirmed")
+
     inlines = [PlayerInline]
 
     fieldsets = (
@@ -39,8 +53,16 @@ class UserAdminCustom(UserAdmin):
     )
 
 
+class UserIsNullFilter(IsNullFilter):
+    title = "Has Bound User"
+    parameter_name = "has_user"
+    field_lookup = "user"
+
+
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
+    list_filter = (UserIsNullFilter,)
+
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
         qs = super().get_queryset(request)
         return qs.annotate(

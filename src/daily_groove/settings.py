@@ -78,10 +78,10 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "core.middleware.invite_token_middleware.InviteTokenMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "core.middleware.invite_token_middleware.InviteTokenMiddleware",
 ]
 
 ROOT_URLCONF = "daily_groove.urls"
@@ -105,11 +105,11 @@ TEMPLATES = [
 WSGI_APPLICATION = os.getenv("WSGI_APPLICATION", "daily_groove.wsgi.application")
 
 MESSAGE_TAGS = {
-    message_constants.INFO: "alert-info",
-    message_constants.SUCCESS: "alert-success",
-    message_constants.ERROR: "alert-danger",
-    message_constants.WARNING: "alert-warning",
-    message_constants.DEBUG: "alert-secondary",
+    message_constants.INFO: "info",
+    message_constants.SUCCESS: "success",
+    message_constants.ERROR: "danger",
+    message_constants.WARNING: "warning",
+    message_constants.DEBUG: "secondary",
 }
 
 # Database
