@@ -10,6 +10,7 @@ from django.views.generic.edit import FormView
 
 from core.forms.player_invite_form import PlayerInviteForm
 from core.models.game import Game
+from core.models.user import User
 
 
 class PlayerInviteView(LoginRequiredMixin, FormView):
@@ -20,35 +21,40 @@ class PlayerInviteView(LoginRequiredMixin, FormView):
     def game(self):
         return get_object_or_404(Game, slug=self.kwargs["slug"])
 
-    @cached_property
-    def invite_message(self):
+    def get_invite_message(self, email=None):
+        if email:
+            if not User.objects.filter(email=email).exists():
+                base_url = f"{settings.ROOT_URL}{reverse('signup')}"
+        base_url = self.game.get_absolute_url()
+
         return f"""You've been invited to join {self.request.user.username}'s game on dailygroove.us: {self.game.name}!
 
 Daily Groove is a music guessing game you play with friends.
 
 To accept, click the link below and create an account if you don't have one already: 
 
-<a href="{settings.ROOT_URL}{self.game.get_absolute_url()}?invite_token={self.game.invite_token}">Join {self.game.name.capitalize()}</a>
+<a href="{base_url}?invite_token={self.game.invite_token}">Join {self.game.name.capitalize()}</a>
 
 """
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["game"] = self.game
-        context["invite_message"] = self.invite_message
+        context["invite_message"] = self.get_invite_message()
         return context
 
     def get_success_url(self) -> str:
         return reverse("manage_game", kwargs={"slug": self.kwargs["slug"]})
 
     def form_valid(self, form):
+        recipient_email = form.cleaned_data["recipient_email"]
         sender_name = self.request.user.username
         subject = f"Invite to join {sender_name}'s game on Daily Groove"
-        message = self.invite_message
+        message = self.get_invite_message(recipient_email)
         send_mail(
             subject=subject,
             message=message,
             from_email=None,
-            recipient_list=[form.cleaned_data["recipient_email"]],
+            recipient_list=[recipient_email],
         )
         return HttpResponseRedirect(self.get_success_url())
