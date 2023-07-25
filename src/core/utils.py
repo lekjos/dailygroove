@@ -40,17 +40,16 @@ class IsNullFilter(admin.SimpleListFilter):
     """
 
     title = "TITLE IN ADMIN"
-    parameter_name = f"url_param_name"
+    parameter_name = "url_param_name"
     field_lookup = "name_of_alias"
 
     def lookups(self, request, model_admin):
         return (
-            ("true", _("True")),
-            ("false", _("False")),
+            ("true", "True"),
+            ("false", "False"),
         )
 
     def queryset(self, request, queryset):
         if self.value() == "true":
             return queryset.exclude({f"{self.field_lookup}__isnull": True})
-        if self.value() == "false":
-            return queryset.filter({f"{self.field_lookup}__isnull": False})
+        return queryset.filter({f"{self.field_lookup}__isnull": False})
