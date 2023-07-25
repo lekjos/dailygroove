@@ -51,5 +51,7 @@ class IsNullFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value() == "true":
-            return queryset.exclude(**{f"{self.field_lookup}__isnull": True})
-        return queryset.filter(**{f"{self.field_lookup}__isnull": False})
+            return queryset.filter(**{f"{self.field_lookup}__isnull": True}).distinct()
+        if self.value() == "false":
+            return queryset.filter(**{f"{self.field_lookup}__isnull": False}).distinct()
+        return queryset
