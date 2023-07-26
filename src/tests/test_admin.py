@@ -1,3 +1,10 @@
+"""
+This module automatically generates a smoke test for all ModelAdmin classes registered in TEST_APPS. That includes:
+- confirming the changelist view returns 200
+- confirming that using the search bar returns a 200
+
+"""
+
 from typing import List
 
 from django.apps import apps
