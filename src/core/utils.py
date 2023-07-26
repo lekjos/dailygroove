@@ -31,7 +31,7 @@ def replace_url_params(
     return ""
 
 
-class IsNullFilter(admin.SimpleListFilter):
+class IsNotNullFilter(admin.SimpleListFilter):
     """Admin Filter for determining if fk is null
     - title: Title in admin
     - parameter_name: url param string
@@ -51,7 +51,7 @@ class IsNullFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         if self.value() == "true":
-            return queryset.filter(**{f"{self.field_lookup}__isnull": True}).distinct()
-        if self.value() == "false":
             return queryset.filter(**{f"{self.field_lookup}__isnull": False}).distinct()
+        if self.value() == "false":
+            return queryset.filter(**{f"{self.field_lookup}__isnull": True}).distinct()
         return queryset
