@@ -6,7 +6,7 @@ import pytest
 
 from core.models.factories import UserFactory
 from core.tokens import account_activation_token
-from test_utils.base_view_test import ViewTest
+from testing_utilities.base_view_test import ViewTest
 
 
 class TestActivateInvalid(ViewTest):

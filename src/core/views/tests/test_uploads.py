@@ -1,7 +1,7 @@
 import pytest
 
-from core.models.factories import GameFactory, UserFactory
-from test_utils.base_view_test import ViewTest
+from core.models.factories import UserFactory
+from testing_utilities.base_view_test import ViewTest
 
 
 class TestUploadsNoAuth(ViewTest):
