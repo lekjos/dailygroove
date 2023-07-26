@@ -27,7 +27,7 @@ class GameFactory(DjangoModelFactory):
     owner = factory.RelatedFactory("core.models.factories.UserFactory")
     slug = factory.Faker("slug")
     frequency = Game.Frequency.MANUAL
-    timezone = zoneinfo.ZoneInfo("America/Los_Angeles")
+    timezone = zoneinfo.ZoneInfo("America/New_York")
     round_start_time = time(hour=10)
     invite_token = uuid.uuid4()
 

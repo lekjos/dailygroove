@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Union
 from django.db import models
 from django.db.models import F
 from django.db.models.functions import Coalesce
+from django.utils import timezone
 
 if TYPE_CHECKING:
     from core.models.game import Game
@@ -33,7 +34,7 @@ class RoundQuerySet(models.QuerySet):
 
         game_tz = game.timezone
         frequency = game.frequency
-        now: datetime = datetime.now(game_tz)
+        now: datetime = timezone.localtime(timezone=game_tz)
 
         def _get_date_range():
             match frequency:
@@ -41,13 +42,13 @@ class RoundQuerySet(models.QuerySet):
                     return None, None
                 case Game.Frequency.DAILY:
                     start_date = now
-                    end_date = now
+                    end_date = now + timedelta(days=1)
                 case Game.Frequency.WEEKDAYS:
                     start_date = now
                     while start_date.weekday() >= 5:  # Saturday is 5, Sunday is 6
                         start_date -= timedelta(days=1)
 
-                    end_date = start_date
+                    end_date = start_date + timedelta(days=1)
                     if start_date.weekday() >= 5:
                         end_date = start_date + timedelta(days=6 - start_date.weekday())
 
@@ -55,31 +56,40 @@ class RoundQuerySet(models.QuerySet):
                     start_date = now
                     while start_date.weekday() > 0:
                         start_date -= timedelta(days=1)
-                    end_date = start_date + timedelta(days=6)
-
+                    end_date = start_date + timedelta(days=7)
+            gst = game.round_start_time
             return (
-                start_date.replace(hour=0, minute=0, second=0, microsecond=0),
-                end_date.replace(hour=23, minute=59, second=59),
+                start_date.replace(
+                    hour=gst.hour, minute=gst.minute, second=0, microsecond=0
+                ),
+                end_date.replace(
+                    hour=gst.hour, minute=gst.minute, second=0, microsecond=0
+                ),
             )
 
         game_id = game.pk if isinstance(game, Game) else game
-        start_date, end_date = _get_date_range()
-        date_kwargs = {}
-        if start_date:
-            date_kwargs["datetime__gte"] = start_date
-        if end_date:
-            date_kwargs["datetime__lt"] = end_date
+        _, end_date = _get_date_range()
 
-        most_recent_round = Round.objects.filter(
-            game_id=game_id, **date_kwargs
-        ).order_by("-round_number")
+        most_recent_round = Round.objects.filter(game_id=game_id).order_by(
+            "-round_number"
+        )
 
         if not most_recent_round:
             most_recent_round = Round.objects.create(game_id=game_id)
         else:
             most_recent_round = most_recent_round.first()
+            if (
+                most_recent_round.winner
+                and end_date
+                and most_recent_round.datetime <= end_date
+            ):
+                most_recent_round = Round.objects.create(game_id=game_id)
 
-        if end_date and now < end_date:
+        if not most_recent_round.winner:
+            # TODO: automatically end round if guesses exist. Implement after async guessing
+            pass
+
+        if end_date and now >= end_date:
             most_recent_round.next_round_at = end_date
         else:
             most_recent_round.round_ends_at = end_date
