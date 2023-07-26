@@ -98,8 +98,9 @@ class RoundAdmin(admin.ModelAdmin):
     )
     search_fields = (
         "game__name",
-        "player__name",
+        "game__pk",
     )
+    list_filter = ("game",)
 
 
 @admin.register(Submission)
@@ -109,4 +110,5 @@ class SubmissionAdmin(admin.ModelAdmin):
         "title",
         "url",
     )
-    search_fields = ("url", "user")
+    search_fields = ("url", "user__username", "title")
+    list_filter = ("user",)
