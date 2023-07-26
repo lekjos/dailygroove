@@ -4,7 +4,7 @@ import pytest
 
 from core.models.factories import GameFactory, PlayerFactory, UserFactory
 from core.models.player import Player
-from test_utils.base_view_test import ViewTest
+from testing_utilities.base_view_test import ViewTest
 
 
 @pytest.fixture
