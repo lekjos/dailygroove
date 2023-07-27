@@ -1,0 +1,17 @@
+{
+  "name": "dailygroove",
+  "version": "1.0.0",
+  "description": "[![codecov](https://codecov.io/gh/lekjos/dailygroove/branch/master/graph/badge.svg?token=FHOY70B2II)](https://codecov.io/gh/lekjos/dailygroove) [![Build & Test](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/lekjos/dailygroove/actions/workflows/build_and_test.yml)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@popperjs/core": "^2.9",
+    "bootstrap": "^5.3.1",
+    "bootstrap-icons": "^1.10.5"
+  }
+}

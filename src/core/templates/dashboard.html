@@ -1,38 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block bodyattrs %}
-  class="text-center"
-{% endblock %}
-{% block extra_style %}
-<link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
+{% block body_classes %}
+text-center
 {% endblock %}
 
 {% block page_content %}
 <div class="container position-parent mb-5">
-    <a class="btn btn-success top-right" href="{% url 'new_game' %}">New Game</a>
+    
 </div>
   <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Welcome to Daily Groove</h1>
-    <p class="lead">Daily Groove is a guessing game you play with your friends. A great way to start your daily stand-up meeting off. We are currently limited to beta users only. Contact the site owner to get your account!</p>
+    <p class="lead">Daily Groove is a guessing game you play with friends. {% if not request.user.is_authenticated %}<a href="{% url 'signup' %}">Sign up here</a>!
+      <br>
+      <br>
+      <small>Or <a href="{% url 'login' %}">Log In</a>...</small>
+      {% endif %}</p>
   </div>
   {% if request.user.is_authenticated %}
+  <div class="container">
     {% if active_games %}
-      <div class="container">
         <div class="card mt-4">
-          <div class="card-header">Active Games</div>
           <div class="card-body">
-            </div>
-              <ul class="list-group mx-4">
-                {% for game in active_games %}
-                  <a class="list-group-item list-group-item-action list-group-item-light" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
-                {% endfor %}
-              </ul>
-            </div>
+            <h5 class="card-title">Active Games</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for game in active_games %}
+            <a class="list-group-item list-group-item-light list-group-item-action" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
+            {% endfor %}
+          </ul>
+          <div class="card-body">
+            <a class="btn btn-success float-end" href="{% url 'new_game' %}">Make New Game</a>
           </div>
         </div>
-      </div>
-    {% else %}
-      <p>You are not a member of any games!</p>
+        {% else %}
+        <p>You are not a member of any games!</p>
     {% endif %}
+  </div>
   {% endif %}
+  <div class="container">
+
+  </div>
 {% endblock %}

@@ -20,7 +20,9 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+NODE_DIR = BASE_DIR.parent
 print("base_dir", BASE_DIR)
+print("node_dir", NODE_DIR)
 
 load_dotenv(os.path.join(BASE_DIR.parent, ".env"))
 
@@ -69,7 +71,7 @@ INSTALLED_APPS = [
     "anymail",
     "core",
     "crispy_forms",
-    "crispy_bootstrap4",
+    "crispy_bootstrap5",
     "django_extensions",
 ]
 
@@ -172,7 +174,12 @@ USE_TZ = True
 STATIC_URL = os.getenv("STATIC_URL", "static/")
 STATIC_ROOT = os.getenv("STATIC_ROOT")
 MEDIA_URL = os.getenv("MEDIA_URL", "media/")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    NODE_DIR / "node_modules/bootstrap/dist",
+    NODE_DIR / "node_modules/@popperjs/core/dist/umd",
+    NODE_DIR / "node_modules/bootstrap-icons",
+]
 
 
 # Default primary key field type
@@ -181,8 +188,12 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 ENABLE_DEBUG_TOOLBAR = os.getenv("ENABLE_DEBUG_TOOLBAR", "").lower() == "true"
 
