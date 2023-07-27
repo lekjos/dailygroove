@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import ImproperlyConfigured
 
-from core.utils import is_moderator
+from core.utils.utilities import is_moderator
 
 
 class IsModeratorOrOwnerMixin(UserPassesTestMixin):

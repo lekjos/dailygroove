@@ -1,0 +1,8 @@
+{% load crispy_forms_tags %}
+
+<div class="card mt-4">
+  <div class="card-header">{{ form_title }}</div>
+  <div class="card-body">
+    {% if form %}{% crispy form %}{% endif %}
+  </div>
+</div>

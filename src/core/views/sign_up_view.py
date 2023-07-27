@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from core.utils import replace_url_params
+from core.utils.utilities import replace_url_params
 
 from ..forms.sign_up_form import SignUpForm
 from ..models import User

@@ -26,6 +26,7 @@ urlpatterns = [
     path("", views.Dashboard.as_view(), name="dashboard"),
     path("uploads/", views.UploadsView.as_view(), name="uploads"),
     path("signup/", views.signup_view, name="signup"),
+    path("g/new/", views.NewGameView.as_view(), name="new_game"),
     path(
         "account_activation_sent/",
         views.account_activation_sent_view,
