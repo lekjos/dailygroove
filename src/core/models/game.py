@@ -22,7 +22,9 @@ class Game(models.Model):
         MONTHLY = 4
 
     name = models.CharField(max_length=256)
-    slug = models.SlugField(primary_key=True)
+    slug = models.SlugField(
+        primary_key=True, help_text="Used in the url for your game."
+    )
     players = models.ManyToManyField("core.user", through="core.player")
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

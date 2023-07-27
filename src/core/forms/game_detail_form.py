@@ -5,6 +5,8 @@ from core.models.game import Game
 
 
 class NewGameDetailForm(BaseCrispyForm, forms.ModelForm):
+    SUBMIT_BUTTON_VALUE = None
+
     def extra_init(self):
         self.helper.form_tag = False
 
