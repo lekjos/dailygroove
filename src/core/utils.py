@@ -1,7 +1,10 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from django.contrib import admin
 from django.utils.http import urlencode
+
+from core.models import Player
+from core.models.user import User
 
 
 def replace_url_params(
@@ -55,3 +58,17 @@ class IsNotNullFilter(admin.SimpleListFilter):
         if self.value() == "false":
             return queryset.filter(**{f"{self.field_lookup}__isnull": True}).distinct()
         return queryset
+
+
+def is_moderator(players: Dict[str, str], user: User):
+    """
+    checks if user is a moderator, given .values queryset of players containing
+    user__id and role keys.
+    """
+    moderators = [
+        x
+        for x in players
+        if x["user__id"] == user.pk
+        and (x["role"] == Player.Roles.MODERATOR or user.is_superuser or user.is_staff)
+    ]
+    return moderators[0] if moderators else None
