@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import Dict
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -14,6 +15,7 @@ from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
 from core.models.submission import Submission
+from core.utils import is_moderator
 
 
 class GameView(FormMixin, DetailView):
@@ -90,19 +92,8 @@ class GameView(FormMixin, DetailView):
         )
 
     @cached_property
-    def moderator(self):
-        moderators = [
-            x
-            for x in self.players
-            if x["user__id"] == self.request.user.pk
-            and (
-                x["role"] == Player.Roles.MODERATOR
-                or self.request.user.is_superuser
-                or self.request.user.is_staff
-            )
-        ]
-
-        return moderators[0] if moderators else None
+    def moderator(self) -> Dict[str, str]:
+        return is_moderator(self.players, self.request.user)
 
     def get_form(self, form_class=None):
         moderator = self.moderator
