@@ -10,11 +10,16 @@ class BaseCrispyForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_method = "post"
-        self.helper.add_input(
-            Submit(
-                name="action",
-                value=self.SUBMIT_BUTTON_VALUE,
+        if self.SUBMIT_BUTTON_VALUE:
+            self.helper.add_input(
+                Submit(
+                    name="action",
+                    value=self.SUBMIT_BUTTON_VALUE,
+                )
             )
-        )
+        self.extra_init()
 
         super().__init__(*args, **kwargs)
+
+    def extra_init(self):
+        return
