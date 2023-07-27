@@ -13,7 +13,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 from core.models.game import Game
 from core.models.player import Player
-from core.utils import replace_url_params
+from core.utils.utilities import replace_url_params
 
 logger = logging.getLogger(__name__)
 

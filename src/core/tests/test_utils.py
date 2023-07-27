@@ -4,7 +4,7 @@ import pytest
 
 from core.admin import UserAdminCustom
 
-from ..utils import replace_url_params
+from ..utils.utilities import replace_url_params
 
 
 @pytest.fixture

@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.models import Game, Player, Round, Submission
 from core.models.user import User
-from core.utils import IsNotNullFilter
+from core.utils.utilities import IsNotNullFilter
 
 
 class PlayerInline(admin.TabularInline):

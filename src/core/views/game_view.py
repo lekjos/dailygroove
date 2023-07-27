@@ -15,7 +15,7 @@ from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
 from core.models.submission import Submission
-from core.utils import is_moderator
+from core.utils.utilities import is_moderator
 
 
 class GameView(FormMixin, DetailView):
