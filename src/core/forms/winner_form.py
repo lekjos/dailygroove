@@ -8,6 +8,7 @@ from core.models.round import Round
 
 class WinnerForm(BaseCrispyForm, forms.ModelForm):
     SUBMIT_BUTTON_VALUE = "Declare Winner"
+    SUBMIT_BUTTON_CSS_CLASSES = "btn-no-bg btn-outline-info"
 
     class Meta:
         model = Round
@@ -30,6 +31,7 @@ class WinnerForm(BaseCrispyForm, forms.ModelForm):
                 Submit(
                     name="action",
                     value="Start Next Round",
+                    css_class="btn-no-bg btn-outline-primary",
                 )
             )
             del self.fields["winner"]
@@ -45,6 +47,7 @@ class WinnerForm(BaseCrispyForm, forms.ModelForm):
                 Submit(
                     name="action",
                     value="Reveal Submitter",
+                    css_class="btn-no-bg btn-outline-danger",
                 )
             )
             if enable_reroll:
@@ -52,6 +55,7 @@ class WinnerForm(BaseCrispyForm, forms.ModelForm):
                     Submit(
                         name="action",
                         value="Shuffle",
+                        css_class="btn-no-bg btn-outline-primary",
                     )
                 )
 

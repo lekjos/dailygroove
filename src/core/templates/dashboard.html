@@ -1,38 +1,58 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block bodyattrs %}
-  class="text-center"
-{% endblock %}
-{% block extra_style %}
-<link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
+{% block body_classes %}
+text-center
 {% endblock %}
 
 {% block page_content %}
-<div class="container position-parent mb-5">
-    <a class="btn btn-success top-right" href="{% url 'new_game' %}">New Game</a>
+<div class="container mb-5">
+    
 </div>
   <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Welcome to Daily Groove</h1>
-    <p class="lead">Daily Groove is a guessing game you play with your friends. A great way to start your daily stand-up meeting off. We are currently limited to beta users only. Contact the site owner to get your account!</p>
+    <p class="lead">Daily Groove is a guessing game you play with friends.</p>
   </div>
   {% if request.user.is_authenticated %}
-    {% if active_games %}
-      <div class="container">
-        <div class="card mt-4">
-          <div class="card-header">Active Games</div>
-          <div class="card-body">
-            </div>
-              <ul class="list-group mx-4">
-                {% for game in active_games %}
-                  <a class="list-group-item list-group-item-action list-group-item-light" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
+  <div class="container">
+    <div class="col-lg-8 mx-auto no-padding">
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">Your Games</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+        {% if active_games %}
+          <ul class="list-group list-group-flush">
+            {% for game in active_games %}
+            <a class="list-group-item list-group-item-light list-group-item-action" href="{{ game.get_absolute_url }}">{{ game.name }}</a>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>You are not a member of any games!</p>
+        {% endif %}
+        <div class="card-body">
+          <a class="btn btn-outline-success float-end" href="{% url 'new_game' %}">Make New Game</a>
         </div>
       </div>
-    {% else %}
-      <p>You are not a member of any games!</p>
-    {% endif %}
+    </div>
+  </div>
   {% endif %}
+  <div class="container">
+    <div class="bg-dark text-secondary px-4 py-5 text-center">
+      <div class="py-5">
+        <h1 class="display-5 fw-bold text-white">How It Works</h1>
+        <div class="col-lg-8 mx-auto no-padding">
+          <p class="fs-5 mb-5">Create an account, upload some songs, create a game, & invite your friends.</p>
+          <p class="fs-5 mb-5">Every day a new round starts and a random song is selected (or any link upload). The players guess who submitted it. The first person to guess right wins the round, otherwise the person who submitted the song wins.</p>
+          <p class="fs-5 mb-5">Currently guessing happens outside the app in a slack channel or group chat, then a moderator selects the winner. Eventually you'll be able to guess in the app. This is just a side project for fun, so we'll see!</p>
+          <p class="fs-5 mb-5">This is how we start our daily standup meetings at my workplace and it keeps things interesting.</p>
+          {% if not request.user.is_authenticated %}
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" href="{% url 'signup' %}">Sign Up</a>
+            <a type="button" class="btn btn-outline-light btn-lg px-4" href="{% url 'login' %}">Log In</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
