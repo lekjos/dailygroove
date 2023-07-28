@@ -15,7 +15,7 @@ class SubmissionQuerySet(models.QuerySet):
 
         return self.annotate(fresh=~Exists(Round.objects.filter(pk=OuterRef("pk"))))
 
-    def get_fresh_groove_pk(self):
+    def get_fresh_groove_pk(self, game):
         """
         Returns the pk of a fresh groove for the selected game.
 
@@ -23,7 +23,9 @@ class SubmissionQuerySet(models.QuerySet):
 
         """
         cols = ("pk", "user_id")
-        all_eligible = Submission.objects.filter(round__isnull=True).values_list(*cols)
+        all_eligible = Submission.objects.filter(
+            round__isnull=True, game=game
+        ).values_list(*cols)
 
         if all_eligible:
             df = pd.DataFrame(all_eligible)
