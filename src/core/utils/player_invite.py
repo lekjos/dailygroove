@@ -27,7 +27,7 @@ Daily Groove is a music guessing game you play with friends.
 
 To accept, click the link below and create an account if you don't have one already: 
 
-<a href="{base_url}?invite_token={game.invite_token}">Join {game.name.capitalize()}</a>
+{base_url}?invite_token={game.invite_token}
 
 """
 

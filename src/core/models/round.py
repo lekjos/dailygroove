@@ -130,7 +130,7 @@ class Round(models.Model):
     def shuffle(self):
         from core.models.submission import Submission
 
-        self.submission_id = Submission.objects.get_fresh_groove_pk()
+        self.submission_id = Submission.objects.get_fresh_groove_pk(game=self.game)
         self.save()
 
     def save(self, *args, **kwargs):
@@ -156,7 +156,7 @@ class Round(models.Model):
         try:
             self.submission
         except Submission.DoesNotExist:
-            self.submission_id = Submission.objects.get_fresh_groove_pk()
+            self.submission_id = Submission.objects.get_fresh_groove_pk(game=self.game)
 
     def __str__(self):
         return f"{self.game} - round {self.round_number}"
