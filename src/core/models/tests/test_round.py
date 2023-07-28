@@ -13,6 +13,7 @@ from core.models.factories import (
 )
 from core.models.game import Game
 from core.models.round import Round
+from core.models.submission import Submission
 
 
 @pytest.fixture
@@ -21,13 +22,13 @@ def game(frequency):
 
 
 @pytest.fixture
-def player():
-    return PlayerFactory()
+def player(game):
+    return PlayerFactory(game=game)
 
 
 @pytest.fixture
-def submissions(game):
-    return SubmissionFactory.create_batch(5)
+def submissions(player):
+    return SubmissionFactory.create_batch(5, user=player.user)
 
 
 @pytest.fixture
@@ -45,7 +46,9 @@ class TestRoundQuerySet:
             return Game.Frequency.DAILY
 
         @pytest.mark.django_db
-        def test_makes_one_new_round(self, game: Game, existing_round: Round):
+        def test_makes_one_new_round(
+            self, game: Game, existing_round: Round, submissions
+        ):
             now = timezone.localtime(
                 existing_round.datetime, timezone=game.timezone
             ) + timedelta(days=2)
@@ -58,6 +61,10 @@ class TestRoundQuerySet:
                 actual = current.round_ends_at
                 assert expected == actual
                 assert Round.objects.count() == 2
+
+        @pytest.mark.django_db
+        def test_it_raises_out_of_submissions_exception(self, game, existing_round):
+            Round.objects.create(game=game)
 
 
 class TestRound:
