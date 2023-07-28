@@ -3,21 +3,23 @@
 {% load static %}
 
 {% block page_content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-md">
-        <div class="card mt-4">
-          <div class="card-header">Update Game Details</div>
-          <div class="card-body">
-            <form method="post">
-              {% if form %}{% crispy form %}{% endif %}
-              <label for="form-0-recipient_email">Recipients</label>
-              {{ email_formset.management_form }}
-              {% for form in email_formset %}
-                {% crispy form %}
-              {% endfor %}
-              <input id="submit-id-action" type="submit" name="action" value="Create Game and Invite Players!" class="btn btn-primary" />
-            </form>
+  <div class="container justify-content-center">
+    <div class="col-6 mx-auto">
+      <div class="row">
+        <div class="col-md">
+          <div class="card mt-4">
+            <div class="card-header">Update Game Details</div>
+            <div class="card-body">
+              <form method="post">
+                {% if form %}{% crispy form %}{% endif %}
+                <label for="form-0-recipient_email">Invite Players:</label>
+                {{ email_formset.management_form }}
+                {% for form in email_formset %}
+                  {% crispy form %}
+                {% endfor %}
+                <input id="submit-id-action" type="submit" name="action" value="Create Game and Invite Players!" class="btn btn-outline-primary" />
+              </form>
+            </div>
           </div>
         </div>
       </div>
