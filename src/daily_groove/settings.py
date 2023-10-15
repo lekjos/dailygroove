@@ -222,3 +222,6 @@ ANYMAIL = {
     "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY", None),
     "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY", None),
 }
+
+# comma separated list of domains which do not require confirming email address
+WHITELISTED_EMAIL_DOMAINS = str(os.getenv("WHITELISTED_EMAIL_DOMAINS", "")).split(",")
