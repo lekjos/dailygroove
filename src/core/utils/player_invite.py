@@ -19,7 +19,7 @@ def get_invite_message(game: "Game", sender: "User", is_member: bool = False):
     if is_member:
         base_url = f"{settings.ROOT_URL}{reverse('signup')}"
     else:
-        base_url = game.get_absolute_url()
+        base_url = settings.ROOT_URL
 
     return f"""You've been invited to join {sender.username}'s game on dailygroove.us: {game.name}!
 
