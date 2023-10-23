@@ -20,7 +20,7 @@ django-timezone-field = "^5.1"
 crispy-bootstrap5 = "^0.7"
 
 [tool.poetry.group.dev.dependencies]
-black= "^23.3.0"
+black= "^23.10.0"
 coverage = "*"
 debugpy = "*"
 django-debug-toolbar = "*"
