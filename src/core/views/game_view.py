@@ -77,7 +77,7 @@ class GameView(FormMixin, DetailView):
     def leader_board(self):
         recent_sqry = Subquery(
             Round.objects.filter(winner_id=OuterRef("pk"), game=self.game)
-            .order_by("datetime")
+            .order_by("-datetime")
             .values("datetime")[:1]
         )
         return (
