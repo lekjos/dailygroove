@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 crispy-bootstrap4 = "*"
-django = "^3.2"
+django = "^4.2"
 django-anymail = "^10.0"
 django-crispy-forms = "*"
 django-extensions = "^3.2.3"
