@@ -69,6 +69,7 @@ class Player(models.Model):
     )
     game = models.ForeignKey("core.game", on_delete=models.CASCADE)
     role = models.PositiveSmallIntegerField(default=Roles.PLAYER)
+    disabled = models.BooleanField(default=False)
 
     objects: PlayerQuerySet = PlayerQuerySet.as_manager()
 

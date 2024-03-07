@@ -3,13 +3,14 @@
 {% load static %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
+<link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block page_content %}
-<div class="container position-parent mb-5">
-    <a class="btn btn-secondary top-right" href="{% url 'player_invite' slug=game.slug %}">Invite Player</a>
-</div>
 <div class="container">
+  <div class="row"><div class="container mb-6">
+      <a class="btn btn-secondary" href="{% url 'player_invite' slug=game.slug %}">Invite Player</a>
+  </div></div>
   <div class="row">
   <div class="col-md">
     {% include 'crispy-form-card.html' with form_title="Update Game Details" %}
@@ -32,9 +33,13 @@
               <tbody>
                 {% for object in object_list %}
                   <tr>
-                    <th scope="row">{{ object.player_name }}</th>
-                    <td>{{ object.has_user }}</td>
-                    <td></td>
+                    <form method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="player_id" value="{{object.id}}">
+                      <th scope="row">{{ object.player_name }}</th>
+                      <td>{{ object.has_user }}</td>
+                      <td><button class="btn" data-bs-toggle="tooltip" data-bs-title="Remove Player" data-bs-placement="right"><i class="bi bi-x-circle text-danger"></i></button></td>
+                    </form>
                   </tr>
                 {% endfor %}
               </tbody>

@@ -58,7 +58,7 @@ class GameView(FormMixin, DetailView):
     @cached_property
     def players(self):
         return (
-            Player.objects.filter(game=self.game)
+            Player.objects.filter(game=self.game, disabled=False)
             .annotate_name()
             .annotate_most_recent_submission()
             .annotate_submission_count()
@@ -81,7 +81,7 @@ class GameView(FormMixin, DetailView):
             .values("datetime")[:1]
         )
         return (
-            Player.objects.filter(game=self.game)
+            Player.objects.filter(game=self.game, disabled=False)
             .annotate_name()
             .annotate(
                 win_count=Count(F("wins"), filter=Q(game=self.game), distinct=True),

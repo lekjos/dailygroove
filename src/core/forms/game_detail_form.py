@@ -19,3 +19,7 @@ class GameDetailForm(BaseCrispyForm, forms.ModelForm):
     class Meta:
         model = Game
         fields = ["name", "slug", "frequency", "timezone", "round_start_time"]
+
+
+class PlayerDeleteForm(forms.Form):
+    player_id = forms.CharField(required=True)

@@ -61,7 +61,7 @@ class UserIsNotNullFilter(IsNotNullFilter):
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_filter = (UserIsNotNullFilter,)
+    list_filter = (UserIsNotNullFilter, "disabled", "game")
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
         qs = super().get_queryset(request)
@@ -95,6 +95,7 @@ class RoundAdmin(admin.ModelAdmin):
         "round_number",
         "game",
         "winner",
+        "datetime",
     )
     search_fields = (
         "game__name",
