@@ -29,7 +29,10 @@ class TestManageGameAnon(ViewTest):
     @pytest.fixture(autouse=True)
     def game(self, moderator_user):
         game = GameFactory()
+        return game
 
+    @pytest.fixture(autouse=True)
+    def players(self, game):
         players = PlayerFactory.create_batch(10, game=game, role=Player.Roles.PLAYER)
         users = [x.user for x in players]
         submission_ct = 25
@@ -37,7 +40,7 @@ class TestManageGameAnon(ViewTest):
             submission_ct,
             user=factory.Iterator([random.choice(users) for _ in range(submission_ct)]),
         )
-        return game
+        return players
 
     @pytest.fixture(autouse=True)
     def moderator_player(self, game, moderator_user):
@@ -46,7 +49,7 @@ class TestManageGameAnon(ViewTest):
         )
 
     @pytest.fixture(autouse=True)
-    def initial_round(self, game):
+    def initial_round(self, game, players):
         return RoundFactory(game=game, winner=None)
 
     @pytest.fixture
@@ -66,3 +69,44 @@ class TestManageGameAsMod(TestManageGameAnon):
     def test_it_returns_form(self, response, game):
         assert "form" in response.context
         assert response.context["form"].__class__ == GameDetailForm
+
+
+class TestManageGameDeletePlayerNoAuth(TestManageGameAnon):
+    EXPECTED_STATUS = 403
+    MAX_QUERIES = 11
+    METHOD = "post"
+    TEMPLATE = None
+
+    @pytest.fixture
+    def as_user(self):
+        return UserFactory()
+
+    @pytest.fixture
+    def request_kwargs(self, players):
+        """passed into test client"""
+        return {"follow": True, "data": {"player_id": f"{players[0].pk}"}}
+
+
+class TestManageGameDeletePlayer(TestManageGameAnon):
+    EXPECTED_STATUS = 200
+    MAX_QUERIES = 13
+    METHOD = "post"
+    TEMPLATE = "manage-game.html"
+
+    @pytest.fixture
+    def as_user(self, moderator_user):
+        return moderator_user
+
+    @pytest.fixture
+    def player_to_delete_pk(self, players):
+        return players[0].pk
+
+    @pytest.fixture
+    def request_kwargs(self, players, game, player_to_delete_pk):
+        """passed into test client"""
+        return {"follow": True, "data": {"player_id": f"{player_to_delete_pk}"}}
+
+    @pytest.mark.django_db
+    def test_it_deleted_player(self, response, player_to_delete_pk):
+        p = Player.objects.get(id=player_to_delete_pk)
+        assert p.disabled == True
