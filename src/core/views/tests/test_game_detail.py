@@ -86,7 +86,7 @@ class TestDeclareWinnerAsMod(PostAsMod, TestGameDetailAnon):
 
     @pytest.fixture
     def winner(self, game):
-        return Player.objects.filter(game=game, disabled=False).order_by("pk").first()
+        return Player.objects.filter(game=game).order_by("pk").first()
 
     @pytest.fixture
     def request_kwargs(self, winner):

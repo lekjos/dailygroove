@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.generic.edit import BaseUpdateView
 from django.views.generic.list import ListView
 
-from core.forms.game_detail_form import GameDetailForm, PlayerDeleteForm
+from core.forms.game_detail_form import GameDetailForm
 from core.models import Player
 from core.models.game import Game
 from core.permissions import IsModeratorOrOwnerMixin
