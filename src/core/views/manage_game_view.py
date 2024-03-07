@@ -2,7 +2,6 @@ from functools import cached_property
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.forms.models import BaseModelForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse

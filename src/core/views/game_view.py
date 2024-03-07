@@ -2,7 +2,7 @@ from functools import cached_property
 from typing import Dict
 
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.exceptions import PermissionDenied
 from django.db.models import Count, F, OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -161,11 +161,8 @@ class GameView(FormMixin, DetailView):
                     return self.render_to_response(self.get_context_data(form=form))
                 if action == "Start Next Round":
                     Round.objects.create(game=self.game)
-                    return redirect("game_detail", slug=self.game.slug)
             except NoEligibleSubmissionsError:
                 messages.error(self.request, "There are no more submissions!")
-                return redirect("game_detail", slug=self.game.slug)
-
             return redirect("game_detail", slug=self.game.slug)
 
         return self.form_invalid(form)
