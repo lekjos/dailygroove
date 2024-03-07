@@ -1,15 +1,18 @@
 from functools import cached_property
 
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import ListView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, ProcessFormView
 
 from core.forms.upload_form import UploadFormAllGames
 from core.models.submission import Submission
 
 
-class UploadsView(LoginRequiredMixin, FormMixin, ListView):
+class UploadsView(LoginRequiredMixin, FormMixin, ProcessFormView, ListView):
     model = Submission
     form_class = UploadFormAllGames
     template_name = "uploads.html"
@@ -27,11 +30,15 @@ class UploadsView(LoginRequiredMixin, FormMixin, ListView):
 
     @cached_property
     def uploads(self):
-        print("here")
         return Submission.objects.filter(user=self.request.user).annotate_fresh()
 
     def get_form(self, form_class=None):
         return UploadFormAllGames(self.request.user, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
         """Insert the form into the context dict."""
@@ -39,36 +46,25 @@ class UploadsView(LoginRequiredMixin, FormMixin, ListView):
             kwargs["form"] = self.get_form()
 
         ctx = super().get_context_data(**kwargs)
-        # if "object_list" not in ctx:
         ctx["object_list"] = self.uploads
         return ctx
-
-    def form_invalid(self, form):
-        """If the form is invalid, render the invalid form."""
-
-        return self.render_to_response(
-            self.get_context_data(form=form, object_list=self.uploads)
-        )
 
     def post(self, request, *args, **kwargs):
         """
         Handle POST requests: instantiate a form instance with the passed
         POST variables and then check if it's valid.
         """
-        form = self.get_form()
-        print(request.POST)
-        if "url" in request.POST:  # pylint: disable=no-else-return
-            if form.is_valid():
-                form.save()
-                return self.form_valid(form)
-            return self.form_invalid(form)
-        elif "delete-song" in request.POST:
-            # TODO delete song
-            return self.form_invalid(form)
-        else:
-            return self.form_invalid(form)
+        if "delete-upload" in request.POST:
+            return self.handle_upload_delete(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
-    # PUT is a valid HTTP verb for creating (with a known URL) or editing an
-    # object, note that browsers only support POST for now.
-    def put(self, *args, **kwargs):
-        return self.post(*args, **kwargs)
+    def handle_upload_delete(self, *args, **kwargs):
+        submission = Submission.objects.get(id=self.request.POST["delete-upload"])
+        if not submission.pk in [x.id for x in self.uploads]:
+            raise PermissionDenied("You cannot delete a song you don't own.")
+        submission.delete()
+        messages.success(
+            self.request,
+            f"You have successfully removed {submission.title or submission.url}",
+        )
+        return HttpResponseRedirect(self.get_success_url())

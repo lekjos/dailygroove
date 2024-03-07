@@ -1,5 +1,8 @@
 from functools import cached_property
 
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.edit import BaseUpdateView
@@ -9,6 +12,7 @@ from core.forms.game_detail_form import GameDetailForm
 from core.models import Player
 from core.models.game import Game
 from core.permissions import IsModeratorOrOwnerMixin
+from core.utils.utilities import is_moderator
 
 
 class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
@@ -26,11 +30,11 @@ class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
     @cached_property
     def players(self):
         return (
-            Player.objects.filter(game_id=self.game.pk)
+            Player.objects.filter(game_id=self.game.pk, disabled=False)
             .annotate_name()
             .annotate_has_user()
             .values(
-                "pk",
+                "id",
                 "player_name",
                 "role",
                 "user__id",
@@ -48,3 +52,22 @@ class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
 
     def get_object(self, queryset=None):
         return self.game
+
+    def post(self, request, *args, **kwargs):
+        if "player_id" in request.POST:
+            return self.handle_player_delete(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
+
+    def handle_player_delete(self, *args, **kwargs):
+        if not is_moderator(self.players, self.request.user):
+            raise PermissionDenied("You are not a moderator of this game.")
+        player = Player.objects.get(id=self.request.POST["player_id"])
+        if not player.pk in [x["id"] for x in self.players]:
+            raise PermissionDenied("You cannot delete a player who isn't in your game.")
+        player.disabled = True
+        player.save(update_fields=["disabled"])
+        messages.success(
+            self.request,
+            f"You have successfully removed {player} from {self.game.name}",
+        )
+        return HttpResponseRedirect(self.get_success_url())
