@@ -52,6 +52,10 @@
                 {% endfor %}
               </tbody>
             </table>
+            {% if wall_of_shame %}
+            <h6>Wall of Shame (players with no submissions left)</h6>
+            <p>{{ wall_of_shame|join:", " }}</p>
+            {% endif %}
           </div>
         </div>
       </div>

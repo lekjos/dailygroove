@@ -41,7 +41,7 @@ class GameView(FormMixin, DetailView):
                 "submitted_by",
                 "title",
                 "url",
-            )
+            )[:50]
         )
 
     @cached_property
@@ -87,6 +87,7 @@ class GameView(FormMixin, DetailView):
                 win_count=Count(F("wins"), filter=Q(game=self.game), distinct=True),
                 most_recent_win=recent_sqry,
             )
+            .filter(win_count__gt=0)
             .order_by("-win_count")
             .values("player_name", "win_count", "most_recent_win")
         )
@@ -122,7 +123,10 @@ class GameView(FormMixin, DetailView):
         context["leader_board"] = self.leader_board
         context["rounds"] = self.rounds
         context["current_round"] = self.current_round
-        context["players"] = self.players
+        context["players"] = [x for x in self.players if x["submission_count"]]
+        context["wall_of_shame"] = [
+            x["player_name"] for x in self.players if not x["submission_count"]
+        ]
         context["moderator"] = self.moderator
         return context
 
@@ -151,17 +155,18 @@ class GameView(FormMixin, DetailView):
                         submitted_by=self.current_round.submission.user.get_display_name(),
                     )
                 )
-            if action == "Shuffle":
-                try:
+            try:
+                if action == "Shuffle":
                     self.current_round.shuffle()
-                except NoEligibleSubmissionsError:
-                    messages.error(self.request, "There are no more submissions!")
-                return self.render_to_response(self.get_context_data(form=form))
-            if action == "Start Next Round":
-                Round.objects.create(game=self.game)
-                redirect("game_detail", slug=self.game.slug)
+                    return self.render_to_response(self.get_context_data(form=form))
+                if action == "Start Next Round":
+                    Round.objects.create(game=self.game)
+                    return redirect("game_detail", slug=self.game.slug)
+            except NoEligibleSubmissionsError:
+                messages.error(self.request, "There are no more submissions!")
+                return redirect("game_detail", slug=self.game.slug)
 
-            raise SuspiciousOperation()
+            return redirect("game_detail", slug=self.game.slug)
 
         return self.form_invalid(form)
 
