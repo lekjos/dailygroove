@@ -22,8 +22,10 @@ class UploadsView(LoginRequiredMixin, FormMixin, ProcessFormView, ListView):
     def get_success_url(self) -> str:
         return reverse("uploads")
 
-    def setup(self, *args, **kwargs):
+    def setup(self, *args, **kwargs):  # pylint: disable=inconsistent-return-statements
         super().setup(*args, **kwargs)
+        if not self.request.user.is_authenticated:
+            return self.handle_no_permission()
         self.object_list = self.uploads
 
     @cached_property
