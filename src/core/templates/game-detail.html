@@ -6,6 +6,9 @@
 <link rel="stylesheet" href="{% static 'css/positioning.css' %}" />
 {% endblock %}
 {% block page_content %}
+<div class="alert alert-success" role="alert">
+  <p class="lead">Stay safe Tampa friends, thinking about you!</p><i class="bi bi-person-heart"></i> <em>LK - <small>10/8/2024</small></em>
+</div>
 <div class="container position-parent">
     <h1>{{ object.name }}</h1>
     {% if moderator %}<a class="btn btn-secondary top-right" href="{% url 'manage_game' slug=object.slug %}">Manage</a>{% endif %}
@@ -28,7 +31,7 @@
             {% endif %}
           </div>
         </div>
-      
+
       </div>
       <div class="col-md">
         <div class="card mt-4">
