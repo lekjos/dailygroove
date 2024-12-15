@@ -24,6 +24,17 @@ class PlayerQuerySet(models.QuerySet):
             )
         ).defer("name")
 
+    def annotate_role_name(self):
+        conditions = [
+            When(role=value, then=Value(label)) for value, label in Player.Roles.choices
+        ]
+        print(conditions)
+        return self.annotate(
+            role_name=Case(
+                *conditions, default=Value("Unknown"), output_field=models.CharField()
+            )
+        )
+
     def annotate_most_recent_submission(self):
         from core.models.submission import Submission
 
@@ -52,6 +63,15 @@ class PlayerQuerySet(models.QuerySet):
         return self.annotate(
             has_user=Case(
                 When(user__isnull=False, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            )
+        )
+
+    def annotate_is_owner(self):
+        return self.annotate(
+            is_owner=Case(
+                When(game__owner=F("user"), then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField(),
             )

@@ -27,7 +27,8 @@
                 <tr>
                   <th>Player</th>
                   <th>Linked to User</th>
-                  <th>Actions</th>
+                  <th>Role</th>
+                  <th>Remove Player</th>
                 </tr>
               </thead>
               <tbody>
@@ -38,7 +39,8 @@
                       <input type="hidden" name="player_id" value="{{object.id}}">
                       <th scope="row">{{ object.player_name }}</th>
                       <td>{{ object.has_user }}</td>
-                      <td><button class="btn" data-bs-toggle="tooltip" data-bs-title="Remove Player" data-bs-placement="right"><i class="bi bi-x-circle text-danger"></i></button></td>
+                      <td scope="row">{% if object.is_owner %} Owner{% else %}{{ object.role_name }} {% if object.is_owner %}<i data-bs-toggle="tooltip" data-bs-placement="right" title="Owner" class="bi bi-person-badge"></i>{% else %}<button name='action' value='promote-demote' class="btn" data-bs-toggle="tooltip" data-bs-title="{% if object.role == 1 %}Promote Player{% else %}Demote Player{% endif %}" data-bs-placement="right"><i class="bi bi-chevron-double-{% if object.role == 1 %}up{% else %}down{% endif %} text-{% if object.role == 1 %}success{% else %}danger{% endif %}"></i></button></th>{% endif %}{% endif %}
+                      <td>{% if not object.is_owner %}<button name='action' value='remove' class="btn" data-bs-toggle="tooltip" data-bs-title="Remove Player" data-bs-placement="right"><i class="bi bi-x-circle text-danger"></i></button></td>{% endif %}
                     </form>
                   </tr>
                 {% endfor %}
