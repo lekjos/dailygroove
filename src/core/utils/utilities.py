@@ -68,7 +68,8 @@ def is_moderator(players: Dict[str, str], user: User):
     moderators = [
         x
         for x in players
-        if x["user__id"] == user.pk
-        and (x["role"] == Player.Roles.MODERATOR or user.is_superuser or user.is_staff)
+        if x["user__id"] == user.pk and (x["role"] == Player.Roles.MODERATOR)
     ]
-    return moderators[0] if moderators else None
+    if moderators or user.is_superuser or user.is_staff:
+        return True
+    return False

@@ -24,11 +24,11 @@ class GameView(FormMixin, DetailView):
     template_name = "game-detail.html"
     raise_exception = True
 
-    @cached_property
+    @property
     def game(self):
         return get_object_or_404(Game, slug=self.kwargs["slug"])
 
-    @cached_property
+    @property
     def rounds(self):
         return (
             Round.objects.filter(game=self.game, winner__isnull=False)
@@ -44,7 +44,7 @@ class GameView(FormMixin, DetailView):
             )[:50]
         )
 
-    @cached_property
+    @property
     def current_round(self):
         try:
             return Round.objects.current_round(game=self.game)
@@ -55,7 +55,7 @@ class GameView(FormMixin, DetailView):
             )
             return Round(game=self.game, submission=submission)
 
-    @cached_property
+    @property
     def players(self):
         return (
             Player.objects.filter(game=self.game, disabled=False)
@@ -92,7 +92,7 @@ class GameView(FormMixin, DetailView):
             .values("player_name", "win_count", "most_recent_win")
         )
 
-    @cached_property
+    @property
     def moderator(self) -> Dict[str, str]:
         return is_moderator(self.players, self.request.user)
 
