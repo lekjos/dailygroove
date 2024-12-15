@@ -15,7 +15,6 @@ from core.models.game import Game
 from core.models.player import Player
 from core.models.round import Round
 from core.models.submission import Submission
-from core.utils.utilities import is_moderator
 
 
 class GameView(FormMixin, DetailView):
@@ -94,7 +93,19 @@ class GameView(FormMixin, DetailView):
 
     @property
     def moderator(self) -> Dict[str, str]:
-        return is_moderator(self.players, self.request.user)
+        moderators = [
+            x
+            for x in self.players
+            if x["user__id"] == self.request.user.pk
+            and (
+                x["role"] == Player.Roles.MODERATOR
+                or self.request.user.is_staff
+                or self.request.user.is_superuser
+            )
+        ]
+        if moderators:
+            return moderators[0]
+        return None
 
     def get_form(self, form_class=None):
         moderator = self.moderator
