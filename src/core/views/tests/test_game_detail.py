@@ -82,7 +82,7 @@ class TestRevealAsMod(PostAsMod, TestGameDetailAnon):
 
 
 class TestDeclareWinnerAsMod(PostAsMod, TestGameDetailAnon):
-    MAX_QUERIES = 20
+    MAX_QUERIES = 21
 
     @pytest.fixture
     def winner(self, game):

@@ -84,7 +84,10 @@ class TestManageGameDeletePlayerNoAuth(TestManageGameAnon):
     @pytest.fixture
     def request_kwargs(self, players):
         """passed into test client"""
-        return {"follow": True, "data": {"player_id": f"{players[0].pk}"}}
+        return {
+            "follow": True,
+            "data": {"player_id": f"{players[0].pk}", "action": "remove"},
+        }
 
 
 class TestManageGameDeletePlayer(TestManageGameAnon):
@@ -104,7 +107,10 @@ class TestManageGameDeletePlayer(TestManageGameAnon):
     @pytest.fixture
     def request_kwargs(self, players, game, player_to_delete_pk):
         """passed into test client"""
-        return {"follow": True, "data": {"player_id": f"{player_to_delete_pk}"}}
+        return {
+            "follow": True,
+            "data": {"player_id": f"{player_to_delete_pk}", "action": "remove"},
+        }
 
     @pytest.mark.django_db
     def test_it_deleted_player(self, response, player_to_delete_pk):

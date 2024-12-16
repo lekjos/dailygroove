@@ -72,7 +72,7 @@ class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
         player = Player.objects.get(id=self.request.POST["player_id"])
         if not player.pk in [x["id"] for x in self.players]:
             raise PermissionDenied("You cannot delete a player who isn't in your game.")
-        if player.pk == self.game.owner.pk:
+        if player.user and self.game.owner and player.user.pk == self.game.owner.pk:
             raise PermissionDenied("Cannot remove owner from game.")
         player.disabled = True
         player.save(update_fields=["disabled"])

@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import Dict
 
 from django.contrib import messages
@@ -22,7 +23,7 @@ class GameView(FormMixin, DetailView):
     template_name = "game-detail.html"
     raise_exception = True
 
-    @property
+    @cached_property
     def game(self):
         return get_object_or_404(Game, slug=self.kwargs["slug"])
 
@@ -53,7 +54,7 @@ class GameView(FormMixin, DetailView):
             )
             return Round(game=self.game, submission=submission)
 
-    @property
+    @cached_property
     def players(self):
         return (
             Player.objects.filter(game=self.game, disabled=False)
@@ -90,7 +91,7 @@ class GameView(FormMixin, DetailView):
             .values("player_name", "win_count", "most_recent_win")
         )
 
-    @property
+    @cached_property
     def moderator(self) -> Dict[str, str]:
         moderators = [
             x
