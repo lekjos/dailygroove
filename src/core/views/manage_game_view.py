@@ -60,7 +60,7 @@ class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
     def post(self, request, *args, **kwargs):
         if "player_id" in request.POST:
             action = request.POST.get("action")
-            if action == "remove":
+            if action == "remove":  # pylint: disable=no-else-return
                 return self.handle_player_delete(request, *args, **kwargs)
             elif action == "promote-demote":
                 return self.handle_player_promote_demote(request, *args, **kwargs)
@@ -91,7 +91,7 @@ class ManageGameView(IsModeratorOrOwnerMixin, BaseUpdateView, ListView):
         if player.pk == self.game.owner.pk:
             raise PermissionDenied("Cannot remove owner from game.")
 
-        promoted = True if player.role == Player.Roles.PLAYER else False
+        promoted = player.role == Player.Roles.PLAYER
         player.role = Player.Roles.MODERATOR if promoted else Player.Roles.PLAYER
         player.save(update_fields=["role"])
         messages.success(
