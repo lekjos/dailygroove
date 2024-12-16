@@ -8,6 +8,7 @@ from testing_utilities.base_view_test import ViewTest
 class TestUploadsNoAuth(ViewTest):
     URL = "uploads"
     EXPECTED_STATUS = 200
+    MAX_QUERIES = 2
     TEMPLATE = "registration/login.html"
 
 

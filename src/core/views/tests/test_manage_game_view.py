@@ -24,7 +24,7 @@ class TestManageGameAnon(ViewTest):
     URL = "manage_game"
     EXPECTED_STATUS = 200
     TEMPLATE = "registration/login.html"
-    MAX_QUERIES = 3
+    MAX_QUERIES = 4
 
     @pytest.fixture(autouse=True)
     def game(self, moderator_user):

@@ -1,24 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
-  <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, shrink-to-fit=no"
-  />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A group guessing game" />
-  <meta name="author" content="Leif Kjos" />
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="canonical" href="{{root_url}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A group guessing game" />
+    <meta name="author" content="Leif Kjos" />
     <head><script src='{% static "js/color-modes.js" %}'></script>
     <title>{% if title %}{{title}}{% else %}Daily Groove{% endif %}</title>
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'font/bootstrap-icons.css' %}" rel="stylesheet">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     {% block extra_style %}{% endblock %}
 
   </head>
-  
+
   <body class="{% block body_classes %}{% endblock %}">
     {% include 'dark-mode-toggle.html' %}
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">

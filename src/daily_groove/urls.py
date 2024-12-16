@@ -14,11 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
+from django.views.generic.base import RedirectView, TemplateView
 
 from core import views
+from core.sitemaps import HomeSitemap
+
+sitemaps = {
+    "home": HomeSitemap,
+}
+SITEMAP_URL = "sitemap.xml/"
+
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
@@ -40,6 +50,18 @@ urlpatterns = [
     path(
         "g/<slug:slug>/invite/", views.PlayerInviteView.as_view(), name="player_invite"
     ),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+    path(
+        SITEMAP_URL,
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+    path("sitemap.txt/", RedirectView.as_view(url="/" + SITEMAP_URL, permanent=False)),
+    path("sitemap/", RedirectView.as_view(url="/" + SITEMAP_URL, permanent=False)),
 ]
 
 if settings.ENABLE_DEBUG_TOOLBAR:
